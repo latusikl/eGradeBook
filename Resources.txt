@@ -1,0 +1,5 @@
+Paste here any resources used in project along with license type.
+Login form: https://colorlib.com/wp/template/login-form-v16/
+License: CC BY 3.0 (Mark changes and give credits to author.)
+Login Background: https://pxhere.com/en/photo/913893
+License: CC0 Public Domain (Free to use even in comercial projects no reqiurements)

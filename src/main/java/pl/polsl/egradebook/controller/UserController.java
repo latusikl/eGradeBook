@@ -1,6 +1,6 @@
 package pl.polsl.egradebook.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -10,40 +10,50 @@ import pl.polsl.egradebook.model.repositories.UserRepository;
 
 import javax.validation.Valid;
 
+/**
+ Controller for user related operations via browser.
+ */
 @Controller
+@RequestMapping("/user")
 public class UserController {
-	//Allows to use JPA repository for user entity
-	@Autowired
-	private UserRepository userRepository;
 	
-	@GetMapping("/add-user")
-	public String showSignUpForm(User user) {
-		return "add-user";
+	private final UserRepository userRepository;
+	private PasswordEncoder passwordEncoder;
+	
+	public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+		this.userRepository = userRepository;
+		this.passwordEncoder = passwordEncoder;
 	}
-	@PostMapping(path = "/add-user")
+	
+	@GetMapping("/add")
+	public String showSignUpForm(User user) {
+		return "user-add";
+	}
+	@PostMapping(path = "/add")
 	public String addUser(@Valid User user, BindingResult bindingResult, Model model){
 		if(bindingResult.hasErrors()){
 			System.err.println("Binding user error addUser");
-			return "add-user";
+			return "user-add";
 		}
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		userRepository.save(user);
 		model.addAttribute("users",userRepository.findAll());
-		return "users";
+		return "user-show-all";
 	}
 	
-	@GetMapping(path="/delete-user/{userID}")
+	@GetMapping(path="/delete/{userID}")
 	public String deleteUser(@PathVariable("userID") int userID, Model model){
 		User userToDelete = userRepository.findById(userID)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid id:" + userID));
 		userRepository.delete(userToDelete);
 		model.addAttribute("users",userRepository.findAll());
-		return "users";
+		return "user-show-all";
 	}
 	
-	@GetMapping(path="/users")
+	@GetMapping(path="/show/all")
 	public String startUserManager(Model model){
 		model.addAttribute("users",userRepository.findAll());
-		return "users";
+		return "user-show-all";
 	}
 	
 	

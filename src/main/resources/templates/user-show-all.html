@@ -14,25 +14,29 @@
         <tr>
             <th>Name</th>
             <th>Surname</th>
-            <th>Login</th>
+            <th>User name</th>
             <th>Password</th>
             <th>ID</th>
-            <th>Delete</th>>
+            <th>Email</th>
+            <th>RoleType</th>
+            <th>Delete</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="user : ${users}">
             <td th:text="${user.name}"></td>
             <td th:text="${user.surname}"></td>
-            <td th:text="${user.login}"></td>
+            <td th:text="${user.userName}"></td>
             <td th:text="${user.password}"></td>
             <td th:text="${user.userID}"></td>
-            <td><a th:href="@{/delete-user/{userID}(userID=${user.userID})}">Delete</a></td>
+            <td th:text="${user.email}"></td>
+            <td th:text="${user.roleType}"></td>
+            <td><a th:href="@{/user/delete/{userID}(userID=${user.userID})}">Delete</a></td>
         </tr>
         </tbody>
 </table>
 </div>
-<p><a href="/add-user">Add a new user</a></p>
+<p><a href="/user/add">Add a new user</a></p>
 </div>
 </body>
 </html>

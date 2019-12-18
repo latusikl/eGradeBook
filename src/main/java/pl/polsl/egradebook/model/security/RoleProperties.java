@@ -23,21 +23,21 @@ import java.util.*;
  */
 @Component
 public class RoleProperties {
-	
+
 	private final String PROP_FILE="src"+File.separator+"main"+File.separator+"resources"+File.separator+"roleConfig.xml";
 	private final String ROLE_TAG_NAME="role";
 	private final String URL_ACCESS_TAG_NAME = "access";
 	private final String ROLE_ATTRIBUTE_NAME = "name";
-	
+
 	/**
 	 Collection holds list of allowed URL's for given role name.
 	 */
 	private Map<String, List<String>> roleAuthenticatorsMap;
-	
+
 	RoleProperties() throws InputException{
 		this.roleAuthenticatorsMap =new HashMap<>();
 	}
-	
+
 	/**
 	 Function is responsible for reading XML file and filling roleAuthenticatorMap object.
 	 @throws InputException When some error occurred during xml reading.
@@ -46,15 +46,15 @@ public class RoleProperties {
 	public void loadRoleConfig() throws InputException{
 		File file = new File(PROP_FILE);
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-		
+
 		try {
 			DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 			//Create DOM for file
 			Document document = documentBuilder.parse(file);
 			NodeList roleNodes = document.getElementsByTagName(ROLE_TAG_NAME);
-			
+
 			fillRoleAuthenticatorsMap(roleNodes);
-		
+
 		}
 		catch (ParserConfigurationException e) {
 			throw new InputException("Unable to create document builder \n" + e.getStackTrace());
@@ -66,7 +66,7 @@ public class RoleProperties {
 			throw new InputException("Unable to read document. \n" + e.getStackTrace());
 		}
 	}
-	
+
 	/**
 	 Function fills roleAuthenticatorMap object.
 	 Based on NodeList from XML tree.
@@ -78,7 +78,7 @@ public class RoleProperties {
 			//Get its child's (access tags for this role)
 			NodeList roleAuthentications = currentRoleNode.getChildNodes();
 			List<String> roleAllowedUrls = new ArrayList<>();
-			
+
 			for (int j = 0; j < roleAuthentications.getLength(); j++) {
 				Node currentRoleAccessNode = roleAuthentications.item(j);
 				//Bypass if tag name not valid
@@ -96,14 +96,14 @@ public class RoleProperties {
 			}
 		}
 	}
-	
+
 	Set<String> getRoleNames(){
 		return roleAuthenticatorsMap.keySet();
 	}
-	
+
 	List<String> getPropertiesByRoleName(String roleName){
 		return this.roleAuthenticatorsMap.get(roleName);
 	}
-	
-	
+
+
 }

@@ -29,7 +29,8 @@ public class UserController {
 	public String showSignUpForm(User user) {
 		return "user-add";
 	}
-	@PostMapping(path = "/add")
+
+	@PostMapping("/add")
 	public String addUser(@Valid User user, BindingResult bindingResult, Model model){
 		if(bindingResult.hasErrors()){
 			System.err.println("Binding user error addUser");

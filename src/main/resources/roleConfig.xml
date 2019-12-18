@@ -19,14 +19,14 @@ Proper file format example:
 
 <config>
     <role name="student">
-        <access>/users</access>
+        <access>/user/show/all</access>
     </role>
     <role name="teacher">
-        <access>/users</access>
-        <access>/user-add</access>
+        <access>/user/show/all</access>
+        <access>/user/add</access>
     </role>
     <role name="admin">
-        <access>/users</access>
-        <access>/user-add</access>
+        <access>/user/show/all</access>
+        <access>/user/add</access>
     </role>
 </config>

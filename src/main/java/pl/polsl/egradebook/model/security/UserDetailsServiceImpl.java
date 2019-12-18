@@ -13,19 +13,19 @@ import pl.polsl.egradebook.model.repositories.UserRepository;
  */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-	
+
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
 	private RoleProperties roleProperties;
-	
+
 	@Override
 	public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
 		User user = userRepository.findUserByUserName(login);
-		
+
 		if(user == null)
 			throw new UsernameNotFoundException(login);
-		
+
 		return new UserDetailsImpl(user,roleProperties);
 	}
 }

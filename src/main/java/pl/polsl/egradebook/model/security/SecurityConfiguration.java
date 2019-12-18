@@ -18,17 +18,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-	
-	
+
+
 	@Autowired
 	private UserDetailsServiceImpl userPrincipalDetailsServiceImpl;
-	
-	
+
+
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) {
 		auth.authenticationProvider(authenticationProvider());
 	}
-	
+
 	/**
 	 Function contains configuration of login form and allowed for everyone URL.
 	 	Good to remember: To load resources like .js .css etc. to permitted to all website you need to access permission to that catalog.
@@ -37,16 +37,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 				.authorizeRequests()
-					.antMatchers("/").permitAll()
-					.antMatchers("/index/**").permitAll()
-					.anyRequest().authenticated()
+				.antMatchers("/").permitAll()
+				.antMatchers("/index/**").permitAll()
+				.anyRequest().authenticated()
 				.and()
 				.formLogin()
 				.and()
 				.formLogin()
 				.loginPage("/login").permitAll();
 	}
-	
+
 	/**
 	 Function creates provider for database authentication
 	 */
@@ -55,10 +55,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
 		daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
 		daoAuthenticationProvider.setUserDetailsService(this.userPrincipalDetailsServiceImpl);
-		
+
 		return daoAuthenticationProvider;
 	}
-	
+
 	@Bean
 	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();

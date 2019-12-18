@@ -34,7 +34,7 @@ public class User {
 	private String password;
 	@NotBlank(message = "Role type is required!")
 	private String roleType;
-	
+
 	@Override
 	public String toString() {
 		return "User{" + "userID=" + userID + ", name='" + name + '\'' + ", surname='" + surname + '\'' + ", email='" + email + '\'' + ", login='" + userName + '\'' + ", password='" + password + '\'' + ", roleType=" + roleType + '}';

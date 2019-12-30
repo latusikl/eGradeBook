@@ -21,6 +21,9 @@ Proper file format example:
     <role name="student">
         <access>/user/show/all</access>
     </role>
+    <role name="parent">
+        <access>/user/show/all</access>
+    </role>
     <role name="teacher">
         <access>/user/show/all</access>
         <access>/user/add</access>

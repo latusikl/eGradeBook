@@ -16,7 +16,6 @@ public class MainController {
 	
 	@GetMapping("/login")
 	public String login(){
-		System.out.println(passwordEncoder.encode("nimda"));
 		return "login.html";
 	}
 	

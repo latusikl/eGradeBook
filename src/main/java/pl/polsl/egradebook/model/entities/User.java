@@ -1,9 +1,5 @@
 package pl.polsl.egradebook.model.entities;
 
-
-
-
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

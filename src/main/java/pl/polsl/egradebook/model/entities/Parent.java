@@ -1,13 +1,20 @@
 package pl.polsl.egradebook.model.entities;
 
-public class Parent extends User {
-    private int childID;
+import javax.persistence.*;
 
-    public int getChildID() {
-        return childID;
-    }
+@Entity
+@Table(name = "parents")
+public class Parent {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int parentID;
 
-    public void setChildID(int childID) {
-        this.childID = childID;
-    }
+    @OneToOne
+    @JoinColumn(name = "userID")
+    private User parent;
+
+    @OneToOne
+    @JoinColumn(name = "childID",  referencedColumnName="userID")
+    private User child;
+
 }

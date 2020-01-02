@@ -2,40 +2,53 @@ package pl.polsl.egradebook.model.entities;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "subjects")
 public class Subject {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int subjectID;
 
-    @NotNull
-    private int classID;
+    @OneToOne
+    @JoinColumn(name = "classID")
+    private StudentsClass studentsClass;
 
-    @NotNull
-    private int teacherID;
+    @OneToOne
+    @JoinColumn(name = "teacherID")
+    private User teacher;
 
     @NotNull
     private String name;
 
     @NotNull
+    @Size(min = 3, max = 3)
     private String day;
 
-    public int getClassID() {
-        return classID;
+    public int getSubjectID() {
+        return subjectID;
     }
 
-    public void setClassID(int classID) {
-        this.classID = classID;
+    public void setSubjectID(int subjectID) {
+        this.subjectID = subjectID;
     }
 
-    public String getName() {
-        return name;
+    public StudentsClass getStudentsClass() {
+        return studentsClass;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setStudentsClass(StudentsClass studentsClass) {
+        this.studentsClass = studentsClass;
+    }
+
+    public User getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(User teacher) {
+        this.teacher = teacher;
     }
 
     public String getDay() {
@@ -46,32 +59,11 @@ public class Subject {
         this.day = day;
     }
 
-    public int getTeacherID() {
-        return teacherID;
+    public String getName() {
+        return name;
     }
 
-    public void setTeacherID(int teacherID) {
-        this.teacherID = teacherID;
+    public void setName(String name) {
+        this.name = name;
     }
-
-    public int getSubjectID() {
-        return subjectID;
-    }
-
-    public void setSubjectID(int subjectID) {
-        this.subjectID = subjectID;
-    }
-
-    @Override
-    public String toString() {
-        return "Subject{" +
-                "subjectID=" + subjectID +
-                ", classID=" + classID +
-                ", teacherID=" + teacherID +
-                ", name='" + name + '\'' +
-                ", day='" + day + '\'' +
-                '}';
-    }
-
-
 }

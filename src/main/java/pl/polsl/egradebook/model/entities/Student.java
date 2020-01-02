@@ -1,16 +1,51 @@
 package pl.polsl.egradebook.model.entities;
 
-import java.util.HashSet;
-import java.util.Set;
+import javax.persistence.*;
 
-public class Student extends User {
-    private int classID;
+@Entity
+@Table(name = "students")
+public class Student {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int studentID;
 
-    public int getClassID() {
-        return classID;
+    @OneToOne
+    @JoinColumn(name = "userID")
+    private User user;
+
+    @OneToOne
+    @JoinColumn(name = "classID")
+    private StudentsClass studentsClass;
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "user=" + user +
+                ", studentsClass=" + studentsClass +
+                '}';
     }
 
-    public void setClassID(int classID) {
-        this.classID = classID;
+    public int getStudentID() {
+        return studentID;
+    }
+
+    public void setStudentID(int studentID) {
+        this.studentID = studentID;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public StudentsClass getStudentsClass() {
+        return studentsClass;
+    }
+
+    public void setStudentsClass(StudentsClass studentsClass) {
+        this.studentsClass = studentsClass;
     }
 }

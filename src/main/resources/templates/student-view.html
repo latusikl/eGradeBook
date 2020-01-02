@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <title>Attendance and grades</title>
+</head>
+<body>
+<div th:switch="${grades}">
+    <h2 th:case="null">No grades yet!</h2>
+    <div th:case="*">
+        <h2>
+            <p>Hello <span th:text="${student.user.name}"  />
+                <span th:text="${student.user.surname}"  />! </p>
+
+        </h2>
+        <h5>Your grades:</h5>
+        <table class="table table-striped">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Subject name</th>
+                <th scope="col">Date</th>
+                <th scope="col">Description</th>
+                <th scope="col">Mark</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="grade : ${grades}">
+                <td th:text="${grade.gradeID}"></td>
+                <td th:text="${grade.subject.name}"></td>
+                <td th:text="${grade.date}"></td>
+                <td th:text="${grade.description}"></td>
+                <td th:text="${grade.mark}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h5>Your attendance:</h5>
+        <table class="table table-striped">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Subject name</th>
+                <th scope="col">Date</th>
+                <th scope="col">Presence</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="presence : ${attendance}">
+                <td th:text="${presence.presenceID}"></td>
+                <td th:text="${presence.subject.name}"></td>
+                <td th:text="${presence.date}"></td>
+                <td th:text="${presence.present}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+</body>
+</html>

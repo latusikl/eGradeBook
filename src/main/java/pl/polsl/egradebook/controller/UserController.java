@@ -41,7 +41,7 @@ public class UserController {
 		model.addAttribute("users",userRepository.findAll());
 		return "user-show-all";
 	}
-	
+
 	@GetMapping(path="/delete/{userID}")
 	public String deleteUser(@PathVariable("userID") int userID, Model model){
 		User userToDelete = userRepository.findById(userID)

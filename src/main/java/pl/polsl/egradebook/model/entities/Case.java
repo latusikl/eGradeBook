@@ -69,4 +69,15 @@ public class Case {
     public void setContent(String content) {
         this.content = content;
     }
+
+    @Override
+    public String toString() {
+        return "Case{" +
+                "caseID=" + caseID +
+                ", sender=" + sender +
+                ", receiver=" + receiver +
+                ", topic='" + topic + '\'' +
+                ", content='" + content + '\'' +
+                '}';
+    }
 }

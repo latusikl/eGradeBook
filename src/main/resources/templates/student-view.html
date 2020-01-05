@@ -7,6 +7,19 @@
     <title>Attendance and grades</title>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Logout</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link active" href="/student/">Home <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link" href="/student/cases">Cases </a>
+        </div>
+    </div>
+</nav>
 <div th:switch="${grades}">
     <h2 th:case="null">No grades yet!</h2>
     <div th:case="*">
@@ -36,7 +49,11 @@
             </tr>
             </tbody>
         </table>
-
+    </div>
+</div>
+<div th:switch="${attendance}">
+    <h2 th:case="null">No attendance yet!</h2>
+    <div th:case="*">
         <h5>Your attendance:</h5>
         <table class="table table-striped">
             <thead class="thead-dark">
@@ -58,9 +75,6 @@
         </table>
     </div>
 </div>
-<form th:action="@{/student/cases}" method="get">
-    <button type="submit" class="btn btn-primary">Manage your cases</button>
-</form>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

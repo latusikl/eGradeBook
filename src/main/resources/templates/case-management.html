@@ -7,8 +7,21 @@
     <title>Attendance and grades</title>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Logout</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link" href="/student/">Home </a>
+            <a class="nav-item nav-link active" href="/student/cases">Cases <span class="sr-only">(current)</span></a>
+        </div>
+    </div>
+</nav>
 <div th:switch="${cases}">
-    <h2 th:case="null">No grades yet!</h2>
+    <h2 th:case="null">No cases yet!</h2>
     <div th:case="*">
         <h5>Cases sent to you:</h5>
         <table class="table table-striped">
@@ -32,9 +45,23 @@
     </div>
 </div>
 
-<form th:action="@{/student/}" method="get">
-    <button type="submit" class="btn btn-primary">Back to main page</button>
+<form method="post" th:action="@{/student/cases/add}" th:object="${newCase}">
+    <div class="form-group">
+        <label for="receiver">Receiver</label>
+        <select th:field="*{receiver}" class="form-control" id="receiver">
+            <option th:each="user : ${users}"
+                    th:value="${user.userID}"
+                    th:text="${user.name + ' ' + user.surname}" />
+        </select>
+        <input type="hidden" class="form-control" th:field="*{sender}" id="sender">
+        <label for="topic">Topic</label>
+        <input type="text" class="form-control" th:field="*{topic}" id="topic" placeholder="Topic">
+        <label for="content">Content</label>
+        <textarea class="form-control" th:field="*{content}" id="content" rows="3" placeholder="Topic"></textarea>
+        <button type="submit" class="btn btn-secondary">Add new case</button>
+    </div>
 </form>
+
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

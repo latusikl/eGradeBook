@@ -16,16 +16,18 @@
     <title>Case content</title>
 </head>
 <body>
-<h5>Case sender:
-    <span th:text="${case.sender.name + ' ' + case.sender.surname}" />
-</h5>
-<h5>Case topic:
-    <span th:text="${case.topic}" />
-</h5>
-<p class="text-justify" th:text="${case.content}" />
-<form th:action="@{/student/cases}" method="get">
-    <button type="submit" class="btn btn-primary">Back to case management</button>
-</form>
+<div class="container">
+    <h5>Case sender:
+        <span th:text="${case.sender.name + ' ' + case.sender.surname}" />
+    </h5>
+    <h5>Case topic:
+        <span th:text="${case.topic}" />
+    </h5>
+    <p class="text-justify" th:text="${case.content}" />
+    <form th:action="@{/student/cases}" method="get">
+        <button type="submit" class="btn btn-primary">Back to case management</button>
+    </form>
+</div>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"

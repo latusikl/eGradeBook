@@ -29,48 +29,49 @@
         </div>
     </div>
 </nav>
-<div th:switch="${cases}">
-    <h2 th:case="null">No cases yet!</h2>
-    <div th:case="*">
-        <h5>Cases sent to you:</h5>
-        <table class="table table-striped">
-            <thead class="thead-dark">
-            <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Sender</th>
-                <th scope="col">topic</th>
-                <th scope="col">View the content</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="case : ${cases}">
-                <td th:text="${case.caseID}"></td>
-                <td th:text="${case.sender.name + ' ' + case.sender.surname}" />
-                <td th:text="${case.topic}" />
-                <td><a th:href="@{/student/cases/{caseID}(caseID=${case.caseID})}">View</a></td>
-            </tr>
-            </tbody>
-        </table>
+<div class="container">
+    <div th:switch="${cases}">
+        <h2 th:case="null">No cases yet!</h2>
+        <div th:case="*">
+            <h5>Cases sent to you:</h5>
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Sender</th>
+                    <th scope="col">topic</th>
+                    <th scope="col">View the content</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="case : ${cases}">
+                    <td th:text="${case.caseID}"></td>
+                    <td th:text="${case.sender.name + ' ' + case.sender.surname}" />
+                    <td th:text="${case.topic}" />
+                    <td><a th:href="@{/student/cases/{caseID}(caseID=${case.caseID})}">View</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
+
+    <form method="post" th:action="@{/student/cases/add}" th:object="${newCase}">
+        <div class="form-group">
+            <label for="receiver">Receiver</label>
+            <select th:field="*{receiver}" class="form-control" id="receiver">
+                <option th:each="user : ${users}"
+                        th:value="${user.userID}"
+                        th:text="${user.name + ' ' + user.surname}" />
+            </select>
+            <input type="hidden" class="form-control" th:field="*{sender}" id="sender">
+            <label for="topic">Topic</label>
+            <input type="text" class="form-control" th:field="*{topic}" id="topic" placeholder="Topic">
+            <label for="content">Content</label>
+            <textarea class="form-control" th:field="*{content}" id="content" rows="3" placeholder="Topic"></textarea>
+            <button type="submit" class="btn btn-secondary">Add new case</button>
+        </div>
+    </form>
 </div>
-
-<form method="post" th:action="@{/student/cases/add}" th:object="${newCase}">
-    <div class="form-group">
-        <label for="receiver">Receiver</label>
-        <select th:field="*{receiver}" class="form-control" id="receiver">
-            <option th:each="user : ${users}"
-                    th:value="${user.userID}"
-                    th:text="${user.name + ' ' + user.surname}" />
-        </select>
-        <input type="hidden" class="form-control" th:field="*{sender}" id="sender">
-        <label for="topic">Topic</label>
-        <input type="text" class="form-control" th:field="*{topic}" id="topic" placeholder="Topic">
-        <label for="content">Content</label>
-        <textarea class="form-control" th:field="*{content}" id="content" rows="3" placeholder="Topic"></textarea>
-        <button type="submit" class="btn btn-secondary">Add new case</button>
-    </div>
-</form>
-
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"

@@ -11,15 +11,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.polsl.egradebook.model.entities.Case;
+import pl.polsl.egradebook.model.entities.Lesson;
 import pl.polsl.egradebook.model.entities.Student;
-import pl.polsl.egradebook.model.entities.User;
 import pl.polsl.egradebook.model.repositories.CaseRepository;
+import pl.polsl.egradebook.model.repositories.LessonRepository;
 import pl.polsl.egradebook.model.repositories.PresenceRepository;
 import pl.polsl.egradebook.model.repositories.GradeRepository;
 import pl.polsl.egradebook.model.repositories.StudentRepository;
 import pl.polsl.egradebook.model.repositories.UserRepository;
 
 import javax.validation.Valid;
+import java.util.List;
 
 
 @Controller
@@ -41,15 +43,22 @@ public class StudentController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private LessonRepository lessonRepository;
+
     @GetMapping("/")
-    public String viewGradesAndAttendance(Authentication authentication, Model model) {
+    public String getStudentView(Authentication authentication, Model model) {
         String userName = authentication.getName();
         Student loggedStudent = studentRepository.findByUser_UserName(userName);
+        int loggedStudentClassID = loggedStudent.getStudentsClass().getClassID();
+        List<Lesson> lessons = lessonRepository.findAllByStudentsClass_ClassID(
+                loggedStudentClassID);
         model.addAttribute("student", loggedStudent);
         model.addAttribute("grades", gradeRepository.
                 findByStudent_studentID(loggedStudent.getStudentID()));
         model.addAttribute("attendance", presenceRepository.
                 findByStudent_studentID(loggedStudent.getStudentID()));
+        model.addAttribute("lessons", lessons);
         return "student-view";
     }
 

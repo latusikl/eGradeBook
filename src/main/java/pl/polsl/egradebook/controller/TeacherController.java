@@ -1,6 +1,7 @@
 package pl.polsl.egradebook.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,20 +19,23 @@ import pl.polsl.egradebook.model.repositories.UserRepository;
 @RequestMapping("/teacher")
 public class TeacherController {
 
-    @Autowired
-    private StudentRepository studentRepository;
+    private final StudentRepository studentRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private GradeRepository gradeRepository;
+    private final GradeRepository gradeRepository;
 
-    @Autowired
-    private PresenceRepository presenceRepository;
-
-
-    @GetMapping("/")
+    private final PresenceRepository presenceRepository;
+    
+    public TeacherController(StudentRepository studentRepository, UserRepository userRepository, GradeRepository gradeRepository, PresenceRepository presenceRepository) {
+        this.studentRepository = studentRepository;
+        this.userRepository = userRepository;
+        this.gradeRepository = gradeRepository;
+        this.presenceRepository = presenceRepository;
+    }
+    
+    @GetMapping()
+    @PreAuthorize("hasAuthority('/teacher')")
     public String viewGradesAndAttendance(Authentication authentication, Model model) {
         String userName = authentication.getName();
         User loggedTeacher = userRepository.findUserByUserName(userName);

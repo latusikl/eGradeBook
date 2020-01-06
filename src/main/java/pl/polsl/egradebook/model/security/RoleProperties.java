@@ -104,6 +104,5 @@ public class RoleProperties {
 	List<String> getPropertiesByRoleName(String roleName){
 		return this.roleAuthenticatorsMap.get(roleName);
 	}
-
-
+	
 }

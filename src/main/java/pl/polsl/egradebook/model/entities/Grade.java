@@ -33,7 +33,6 @@ public class Grade {
     @NotNull
     private String description;
 
-
     @Min(value = 1, message = "Mark should not be less than 1")
     @Max(value = 6, message = "Mark should not be greater than 6")
     private int mark;

@@ -11,8 +11,6 @@ public class StudentsClass {
     @Id
     private int classID;
 
-    private int size;
-
     @NotNull
     private String name;
 
@@ -20,7 +18,6 @@ public class StudentsClass {
     public String toString() {
         return "StudentsClass{" +
                 "classID=" + classID +
-                ", size=" + size +
                 ", name='" + name + '\'' +
                 '}';
     }
@@ -31,14 +28,6 @@ public class StudentsClass {
 
     public void setClassID(int classID) {
         this.classID = classID;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
     }
 
     public String getName() {

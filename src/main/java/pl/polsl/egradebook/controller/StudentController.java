@@ -83,8 +83,7 @@ public class StudentController {
 		model.addAttribute("newCase", new Case());
 		return "case-management";
 	}
-	
-	// not tested yet
+
 	@PostMapping("/cases/add")
 	@PreAuthorize("hasAuthority('/student/cases/add')")
 	public String addCase(@ModelAttribute("newCase") @Valid Case newCase, BindingResult bindingResult, Model model, Authentication authentication) {

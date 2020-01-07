@@ -21,8 +21,8 @@ public class Presence {
     private Student student;
 
     @ManyToOne
-    @JoinColumn(name = "subjectID")
-    private Subject subject;
+    @JoinColumn(name = "lessonID")
+    private Lesson lesson;
 
     @NotNull
     private String date;
@@ -53,12 +53,12 @@ public class Presence {
         this.student = student;
     }
 
-    public Subject getSubject() {
-        return subject;
+    public Lesson getLesson() {
+        return lesson;
     }
 
-    public void setSubject(Subject subject) {
-        this.subject = subject;
+    public void setLesson(Lesson lesson) {
+        this.lesson = lesson;
     }
 
     public int getPresenceID() {

@@ -5,6 +5,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -23,13 +25,9 @@ public class Student {
     @JoinColumn(name = "classID")
     private StudentsClass studentsClass;
 
-    @Override
-    public String toString() {
-        return "Student{" +
-                "user=" + user +
-                ", studentsClass=" + studentsClass +
-                '}';
-    }
+    @ManyToOne
+    @JoinColumn(name = "parentID")
+    private Parent parent;
 
     public int getStudentID() {
         return studentID;
@@ -53,5 +51,23 @@ public class Student {
 
     public void setStudentsClass(StudentsClass studentsClass) {
         this.studentsClass = studentsClass;
+    }
+
+    public Parent getParent() {
+        return parent;
+    }
+
+    public void setParent(Parent parent) {
+        this.parent = parent;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "studentID=" + studentID +
+                ", user=" + user +
+                ", studentsClass=" + studentsClass +
+                ", parent=" + parent +
+                '}';
     }
 }

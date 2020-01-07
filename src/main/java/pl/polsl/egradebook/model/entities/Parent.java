@@ -19,8 +19,11 @@ public class Parent {
     @JoinColumn(name = "userID")
     private User parent;
 
-    @OneToOne
-    @JoinColumn(name = "childID",  referencedColumnName="userID")
-    private User child;
-
+    @Override
+    public String toString() {
+        return "Parent{" +
+                "parentID=" + parentID +
+                ", parent=" + parent +
+                '}';
+    }
 }

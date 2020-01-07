@@ -25,7 +25,7 @@ public class Lesson {
     private Subject Subject;
 
     @ManyToOne
-    @JoinColumn(name = "teacherID", referencedColumnName = "userID")
+    @JoinColumn(name = "teacherID")
     private Teacher teacher;
 
     @OneToOne

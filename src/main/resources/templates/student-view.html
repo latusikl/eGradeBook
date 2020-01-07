@@ -9,6 +9,15 @@
         background-size: cover;
         -o-background-size: cover;
     }
+    .row1 {
+        /*display: -ms-flexbox;*/
+        display: flex;
+        justify-content: center;
+        /*-ms-flex-wrap: wrap;
+        /* flex-wrap: wrap; */
+        /* margin-right: -15px; */
+        /* margin-left: -15px; */
+    }
 </style>
 <head>
     <meta charset="UTF-8">
@@ -74,7 +83,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="presence : ${attendance}">
-                    <td th:text="${presence.subject.name}"></td>
+                    <td th:text="${presence.lesson.subject.name}"></td>
                     <td th:text="${presence.date}"></td>
                     <td th:text="${presence.present}"></td>
                 </tr>
@@ -83,30 +92,107 @@
         </div>
     </div>
 
+    <div class="row1 "style="text-align: center;">
     <div th:switch="${lessons}">
         <h2 th:case="null">No lessons yet!</h2>
         <div th:case="*">
             <h5>Your lessons:</h5>
-            <table class="table table-striped">
-                <thead class="thead-dark">
-                <tr>
-                    <th scope="col">Day</th>
-                    <th scope="col">Lesson number</th>
-                    <th scope="col">Subject name</th>
-                    <th scope="col">Teacher</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="lesson : ${lessons}">
-                    <td th:text="${lesson.day.day}"></td>
-                    <td th:text="${lesson.number}"></td>
-                    <td th:text="${lesson.subject.name}"></td>
-                    <td th:text="${lesson.teacher.name + ' ' + lesson.teacher.surname}"></td>
-                </tr>
-                </tbody>
-            </table>
+        </div>
+        <div class="row1">
+            <div class="col-md-3">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">MONDAY</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr th:each="lesson : ${lessons}">
+                            <th:block th:if="${lesson.day.day=='PON'}">
+                                <td th:text="${lesson.subject.name}">Dataset Field</td>
+                            </th:block>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">TUESDAY</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="lesson : ${lessons}">
+                            <th:block th:if="${lesson.day.day=='WTO'}">
+                                <td th:text="${lesson.subject.name}">Dataset Field</td>
+                            </th:block>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">WEDNESDAY</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="lesson : ${lessons}">
+                            <th:block th:if="${lesson.day.day=='SRO'}">
+                                <td th:text="${lesson.subject.name}">Dataset Field</td>
+                            </th:block>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">THURSDAY</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="lesson : ${lessons}">
+                            <th:block th:if="${lesson.day.day=='CZW'}">
+                                <td th:text="${lesson.subject.name}">Dataset Field</td>
+                            </th:block>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-3">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">FRIDAY</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="lesson : ${lessons}">
+                        <th:block th:if="${lesson.day.day=='PTK'}">
+                            <td th:text="${lesson.subject.name}">Dataset Field</td>
+                        </th:block>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
         </div>
     </div>
+
 
 </div>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

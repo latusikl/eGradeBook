@@ -1,0 +1,205 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<style>
+    body {
+        background: url('https://www.toutpourlamoto.fr/images/greetings/light-grey-curves-15195.jpg') no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        background-size: cover;
+        -o-background-size: cover;
+    }
+    .row1 {
+        /*display: -ms-flexbox;*/
+        display: flex;
+        justify-content: center;
+        /*-ms-flex-wrap: wrap;
+        /* flex-wrap: wrap; */
+        /* margin-right: -15px; */
+        /* margin-left: -15px; */
+    }
+</style>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Attendance and grades</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Logout</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link active" href="/student/">Home <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link" href="/student/cases">Cases </a>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div th:switch="${grades}">
+        <h2 th:case="null">No grades yet!</h2>
+        <div th:case="*">
+            <h2>
+                <p>Hello <span th:text="${student.user.name}"  />
+                    <span th:text="${student.user.surname}"  />! </p>
+
+            </h2>
+            <h5>Your grades:</h5>
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Subject name</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Mark</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="grade : ${grades}">
+                    <td th:text="${grade.subject.name}"></td>
+                    <td th:text="${grade.date}"></td>
+                    <td th:text="${grade.description}"></td>
+                    <td th:text="${grade.mark}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div th:switch="${attendance}">
+        <h2 th:case="null">No attendance yet!</h2>
+        <div th:case="*">
+            <h5>Your attendance:</h5>
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Subject name</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Presence</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="presence : ${attendance}">
+                    <td th:text="${presence.lesson.subject.name}"></td>
+                    <td th:text="${presence.date}"></td>
+                    <td th:text="${presence.present}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row1 "style="text-align: center;">
+        <div th:switch="${lessons}">
+            <h2 th:case="null">No lessons yet!</h2>
+            <div th:case="*">
+                <h5>Your lessons:</h5>
+            </div>
+            <div class="row1">
+                <div class="col-md-3">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">MONDAY</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            <tr th:each="lesson : ${lessons}">
+                                <th:block th:if="${lesson.day.day=='PON'}">
+                                    <td th:text="${lesson.subject.name}">Dataset Field</td>
+                                </th:block>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">TUESDAY</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="lesson : ${lessons}">
+                                <th:block th:if="${lesson.day.day=='WTO'}">
+                                    <td th:text="${lesson.subject.name}">Dataset Field</td>
+                                </th:block>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">WEDNESDAY</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="lesson : ${lessons}">
+                                <th:block th:if="${lesson.day.day=='SRO'}">
+                                    <td th:text="${lesson.subject.name}">Dataset Field</td>
+                                </th:block>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">THURSDAY</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="lesson : ${lessons}">
+                                <th:block th:if="${lesson.day.day=='CZW'}">
+                                    <td th:text="${lesson.subject.name}">Dataset Field</td>
+                                </th:block>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">FRIDAY</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="lesson : ${lessons}">
+                                <th:block th:if="${lesson.day.day=='PTK'}">
+                                    <td th:text="${lesson.subject.name}">Dataset Field</td>
+                                </th:block>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,6 +1,5 @@
 package pl.polsl.egradebook.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -11,7 +10,6 @@ import pl.polsl.egradebook.model.entities.Student;
 import pl.polsl.egradebook.model.entities.User;
 import pl.polsl.egradebook.model.repositories.GradeRepository;
 import pl.polsl.egradebook.model.repositories.PresenceRepository;
-import pl.polsl.egradebook.model.repositories.StudentRepository;
 import pl.polsl.egradebook.model.repositories.UserRepository;
 
 

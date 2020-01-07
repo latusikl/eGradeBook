@@ -23,6 +23,8 @@ Proper file format example:
         <access>/student/cases/{caseID}</access>
         <access>/student/cases</access>
         <access>/student/cases/add</access>
+        <access>/student/grades</access>
+        <access>/student/attendance</access>
     </role>
     <role name="parent">
     </role>

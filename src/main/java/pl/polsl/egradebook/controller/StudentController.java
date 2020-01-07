@@ -63,6 +63,29 @@ public class StudentController {
 		model.addAttribute("lessons", lessons);
 		return "student-view";
 	}
+
+	@GetMapping(path = "/grades")
+	@PreAuthorize("hasAuthority('/student/grades')")
+	public String getStudentGradesView(Authentication authentication, Model model) {
+		String userName = authentication.getName();
+		Student loggedStudent = studentRepository.findByUser_UserName(userName);
+		model.addAttribute("student", loggedStudent);
+		model.addAttribute("grades", gradeRepository.
+				findByStudent_studentID(loggedStudent.getStudentID()));
+		return "grades-view";
+	}
+
+	@GetMapping(path = "/attendance")
+	@PreAuthorize("hasAuthority('/student/attendance')")
+	public String getStudentAttendanceView(Authentication authentication, Model model) {
+		String userName = authentication.getName();
+		Student loggedStudent = studentRepository.findByUser_UserName(userName);
+		int loggedStudentClassID = loggedStudent.getStudentsClass().getClassID();
+		model.addAttribute("student", loggedStudent);
+		model.addAttribute("attendance", presenceRepository.
+				findByStudent_studentID(loggedStudent.getStudentID()));
+		return "attendance-view";
+	}
 	
 	@GetMapping(path = "/cases/{caseID}")
 	@PreAuthorize("hasAuthority('/student/cases/{caseID}')")

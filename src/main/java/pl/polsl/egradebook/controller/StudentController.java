@@ -38,7 +38,9 @@ public class StudentController {
 	private final UserRepository userRepository;
 	
 	private final LessonRepository lessonRepository;
-	
+
+	private final String homeUrl;
+
 	public StudentController(StudentRepository studentRepository, GradeRepository gradeRepository, PresenceRepository presenceRepository, CaseRepository caseRepository, UserRepository userRepository, LessonRepository lessonRepository) {
 		this.studentRepository = studentRepository;
 		this.gradeRepository = gradeRepository;
@@ -46,6 +48,7 @@ public class StudentController {
 		this.caseRepository = caseRepository;
 		this.userRepository = userRepository;
 		this.lessonRepository = lessonRepository;
+		this.homeUrl = "/student/";
 	}
 	
 	@GetMapping()
@@ -61,14 +64,16 @@ public class StudentController {
 		model.addAttribute("attendance", presenceRepository.
 				findByStudent_studentID(loggedStudent.getStudentID()));
 		model.addAttribute("lessons", lessons);
+		model.addAttribute("homeUrl",homeUrl);
 		return "student-view";
 	}
 	
 	@GetMapping(path = "/cases/{caseID}")
 	@PreAuthorize("hasAuthority('/student/cases/{caseID}')")
-	public String deleteUser(@PathVariable("caseID") int caseID, Model model) {
+	public String selectedCase(@PathVariable("caseID") int caseID, Model model) {
 		Case foundCase = caseRepository.findById(caseID).orElseThrow(() -> new IllegalArgumentException("Invalid id:" + caseID));
 		model.addAttribute("case", foundCase);
+		model.addAttribute("homeUrl",homeUrl);
 		return "case-content-view";
 	}
 	
@@ -81,6 +86,7 @@ public class StudentController {
 				findByReceiver_UserID(loggedStudent.getUser().getUserID()));
 		model.addAttribute("users", userRepository.findAll());
 		model.addAttribute("newCase", new Case());
+		model.addAttribute("homeUrl",homeUrl);
 		return "case-management";
 	}
 	
@@ -96,6 +102,7 @@ public class StudentController {
 		Student loggedStudent = studentRepository.findByUser_UserName(userName);
 		newCase.setSender(loggedStudent.getUser());
 		caseRepository.save(newCase);
+		model.addAttribute("homeUrl",homeUrl);
 		model.addAttribute("cases", caseRepository.
 				findByReceiver_UserID(loggedStudent.getUser().getUserID()));
 		return "case-management";

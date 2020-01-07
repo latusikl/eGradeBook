@@ -3,27 +3,58 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Add user form</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Add user</title>
 </head>
 <body>
-<form action="#" method="post" th:action="@{/user/add}" th:object="${user}">
-    <label for="name">Name</label>
-    <input type="text" th:field="*{name}" id="name" placeholder="Name">
-    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
-    <label for="surname">Surname</label>
-    <input type="text" th:field="*{surname}" id="surname" placeholder="Surname">
-    <span th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></span>
-    <label for="userName">User Name</label>
-    <input type="text" th:field="*{userName}" id="userName" placeholder="UserName">
-    <span th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}"></span>
-    <label for="password">Password</label>
-    <input type="text" th:field="*{password}" id="password" placeholder="Password">
-    <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
-    <input type="text" th:field="*{email}" id="email" placeholder="Email">
-    <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
-    <input type="text" th:field="*{roleType}" id="roleType" placeholder="RoleType">
-    <span th:if="${#fields.hasErrors('roleType')}" th:errors="*{roleType}"></span>
-    <input type="submit" value="Add User">
-</form>
+<div class="container">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/logout">Logout</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link active" href="/admin/">Home <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link active" href="/user/show/all">Show users <span class="sr-only">(current)</span></a>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <form action="#" method="post" th:action="@{/user/add}" th:object="${user}">
+        <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" th:field="*{name}" id="name" placeholder="Name"  class="form-control">
+        <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+        <label for="surname">Surname</label>
+        <input type="text" th:field="*{surname}" id="surname" placeholder="Surname"  class="form-control">
+        <span th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></span>
+        <label for="userName">User Name</label>
+        <input type="text" th:field="*{userName}" id="userName" placeholder="UserName"  class="form-control">
+        <span th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}"></span>
+        <label for="password">Password</label>
+        <input type="text" th:field="*{password}" id="password" placeholder="Password"  class="form-control">
+        <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+            <label for="email">Email</label>
+        <input type="text" th:field="*{email}" id="email" placeholder="Email"  class="form-control">
+        <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+            <label for="roleType">Role Type</label>
+        <input type="text" th:field="*{roleType}" id="roleType" placeholder="RoleType"  class="form-control">
+        <span th:if="${#fields.hasErrors('roleType')}" th:errors="*{roleType}"></span>
+        <input type="submit" value="Add User"  class="btn btn-secondary">
+        </div>
+    </form>
+</div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
 </html>

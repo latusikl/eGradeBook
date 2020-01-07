@@ -20,7 +20,7 @@ import javax.validation.Valid;
 public class UserController {
 	
 	private final UserRepository userRepository;
-	private PasswordEncoder passwordEncoder;
+	private final PasswordEncoder passwordEncoder;
 	
 	public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
 		this.userRepository = userRepository;

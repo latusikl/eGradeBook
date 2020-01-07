@@ -83,7 +83,7 @@ public class StudentController {
 	@PreAuthorize("hasAuthority('/student/cases/add')")
 	public String addCase(@ModelAttribute("newCase") @Valid Case newCase, BindingResult bindingResult, Model model, Authentication authentication) {
 		if (bindingResult.hasErrors()) {
-			System.err.println("Binding user error addCase");
+			System.err.println("Binding case error addCase");
 			return "case-management";
 		}
 		String userName = authentication.getName();

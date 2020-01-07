@@ -1,20 +1,19 @@
 package pl.polsl.egradebook.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 
 @Controller
 public class MainController {
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
+
+    public MainController(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @GetMapping("/")
     public String index() {
@@ -35,6 +34,8 @@ public class MainController {
         else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("/student")))
             return "redirect:/student";
             //else
+        else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("/parent")))
+            return "redirect:/parent";
         else
             return "redirect:/";
     }

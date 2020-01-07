@@ -17,15 +17,7 @@ public class Parent {
 
     @OneToOne
     @JoinColumn(name = "userID")
-    private User parent;
-
-    @Override
-    public String toString() {
-        return "Parent{" +
-                "parentID=" + parentID +
-                ", parent=" + parent +
-                '}';
-    }
+    private User user;
 
     public int getParentID() {
         return parentID;
@@ -35,11 +27,19 @@ public class Parent {
         this.parentID = parentID;
     }
 
-    public User getParent() {
-        return parent;
+    public User getUser() {
+        return user;
     }
 
-    public void setParent(User parent) {
-        this.parent = parent;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    @Override
+    public String toString() {
+        return "Parent{" +
+                "parentID=" + parentID +
+                ", user=" + user +
+                '}';
     }
 }

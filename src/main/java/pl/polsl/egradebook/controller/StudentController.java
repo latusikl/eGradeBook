@@ -13,12 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pl.polsl.egradebook.model.entities.Case;
 import pl.polsl.egradebook.model.entities.Lesson;
 import pl.polsl.egradebook.model.entities.Student;
-import pl.polsl.egradebook.model.repositories.CaseRepository;
-import pl.polsl.egradebook.model.repositories.LessonRepository;
-import pl.polsl.egradebook.model.repositories.PresenceRepository;
-import pl.polsl.egradebook.model.repositories.GradeRepository;
-import pl.polsl.egradebook.model.repositories.StudentRepository;
-import pl.polsl.egradebook.model.repositories.UserRepository;
+import pl.polsl.egradebook.model.repositories.*;
 
 import javax.validation.Valid;
 import java.util.List;

@@ -10,7 +10,6 @@ import pl.polsl.egradebook.model.entities.Student;
 import pl.polsl.egradebook.model.entities.User;
 import pl.polsl.egradebook.model.repositories.GradeRepository;
 import pl.polsl.egradebook.model.repositories.PresenceRepository;
-import pl.polsl.egradebook.model.repositories.StudentRepository;
 import pl.polsl.egradebook.model.repositories.UserRepository;
 
 

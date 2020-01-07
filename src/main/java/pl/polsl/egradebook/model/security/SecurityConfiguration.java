@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
  Configuration of Spring Security.
@@ -40,11 +41,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.authorizeRequests()
 				.antMatchers("/").permitAll()
 				.antMatchers("/index/**").permitAll()
-				.anyRequest().authenticated()
-				.and()
+				.antMatchers("/logout").permitAll()
+				.anyRequest().authenticated();
+		http
 				.formLogin().defaultSuccessUrl("/authredir")//redirect here after successful login
-				.loginPage("/login").permitAll()
-				.and()
+				.loginPage("/login").permitAll();
+		http
+				.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login");
+		http
+				
 				.exceptionHandling().accessDeniedPage("/error/403");
 	}
 

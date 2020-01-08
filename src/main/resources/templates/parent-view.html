@@ -1,0 +1,229 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<style>
+    .row1 {
+        display: flex;
+        justify-content: center;
+    }
+</style>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Parent view</title>
+</head>
+<body class="body"
+      th:style="'background: url(' + @{/pictures/gray_background5.jpg} + '); background-size: cover; width: 100%; height: 100%'">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Logout</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link active" href="/student/">Home <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link" href="/student/cases">Cases </a>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <h2>
+        <p>
+            Hello <span th:text="${parent.user.name}"/>
+            <span th:text="${parent.user.surname}"/>!
+        </p>
+    </h2>
+    <div th:if="${child == null}">
+        <form method="post" th:action="${'parent/'}">
+            <label for="childID">Select child</label>
+            <select class="form-control" id="childID" name="childID">
+                <option th:each="child : ${children}"
+                        th:value="${child.studentID}"
+                        th:text="${child.user.name + ' ' + child.user.surname}"/>
+            </select>
+            <br>
+            <button type="submit" class="btn btn-secondary">Select</button>
+        </form>
+    </div>
+    <div th:if="${child != null}">
+        <h5>
+            <p>
+                Grades of your child
+                <span th:text="${child.user.name}"/>:
+            </p>
+        </h5>
+        <div th:switch="${grades}">
+            <h2 th:case="null">No grades yet.</h2>
+            <div th:case="*">
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Subject name</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Mark</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="grade : ${grades}">
+                        <td th:text="${grade.subject.name}"></td>
+                        <td th:text="${grade.date}"></td>
+                        <td th:text="${grade.description}"></td>
+                        <td th:text="${grade.mark}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div th:switch="${absences}">
+            <h5>
+                <p>
+                    Absences of your child
+                    <span th:text="${child.user.name}"/>:
+                </p>
+            </h5>
+            <h2 th:case="null">No absences.</h2>
+            <div th:case="*">
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Day</th>
+                        <th scope="col">Number of lesson</th>
+                        <th scope="col">Subject name</th>
+                        <th scope="col">Absence</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="absence : ${absences}">
+                        <td th:text="${absence.date}"></td>
+                        <td th:text="${absence.lesson.day.day}"></td>
+                        <td th:text="${absence.lesson.number}"></td>
+                        <td th:text="${absence.lesson.subject.name}"></td>
+                        <td><a th:href="@{/parent/attendance/{presenceID}(presenceID=${absence.presenceID})}">
+                            Excuse</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row1 " style="text-align: center;">
+            <div th:switch="${lessons}">
+                <h2 th:case="null">No lessons yet!</h2>
+                <div th:case="*">
+                    <h5>Your child lessons:</h5>
+                </div>
+                <div class="row1">
+                    <div class="col-md-3">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">MONDAY</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <tr th:each="lesson : ${lessons}">
+                                    <th:block th:if="${lesson.day.day=='PON'}">
+                                        <td th:text="${lesson.subject.name}">Dataset Field</td>
+                                    </th:block>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">TUESDAY</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="lesson : ${lessons}">
+                                    <th:block th:if="${lesson.day.day=='WTO'}">
+                                        <td th:text="${lesson.subject.name}">Dataset Field</td>
+                                    </th:block>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">WEDNESDAY</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="lesson : ${lessons}">
+                                    <th:block th:if="${lesson.day.day=='SRO'}">
+                                        <td th:text="${lesson.subject.name}">Dataset Field</td>
+                                    </th:block>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">THURSDAY</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="lesson : ${lessons}">
+                                    <th:block th:if="${lesson.day.day=='CZW'}">
+                                        <td th:text="${lesson.subject.name}">Dataset Field</td>
+                                    </th:block>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">FRIDAY</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="lesson : ${lessons}">
+                                    <th:block th:if="${lesson.day.day=='PTK'}">
+                                        <td th:text="${lesson.subject.name}">Dataset Field</td>
+                                    </th:block>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>

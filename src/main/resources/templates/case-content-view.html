@@ -2,13 +2,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <style>
-    body {
-        background: url('https://www.toutpourlamoto.fr/images/greetings/light-grey-curves-15195.jpg') no-repeat center center fixed;
-        -webkit-background-size: cover;
-        -moz-background-size: cover;
-        background-size: cover;
-        -o-background-size: cover;
-    }
 </style>
 <head>
     <meta charset="UTF-8">
@@ -16,7 +9,7 @@
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>Case content</title>
 </head>
-<body>
+<body th:style="'background: url(' + @{/pictures/gray_background5.jpg} + '); background-size: cover; width: 100%; height: 100%'" >
 <div class="container">
     <h5>Case sender:
         <span th:text="${case.sender.name + ' ' + case.sender.surname}" />
@@ -26,7 +19,7 @@
     </h5>
     <p class="text-justify" th:text="${case.content}" />
     <form th:action="@{/student/cases}" method="get">
-        <button type="submit" class="btn btn-primary">Back to case management</button>
+        <button type="submit" class="btn btn-secondary">Back to case management</button>
     </form>
 </div>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

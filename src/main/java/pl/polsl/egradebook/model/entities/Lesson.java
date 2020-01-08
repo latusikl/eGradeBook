@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -23,9 +24,9 @@ public class Lesson {
     @JoinColumn(name = "subjectID")
     private Subject Subject;
 
-    @OneToOne
-    @JoinColumn(name = "teacherID", referencedColumnName = "userID")
-    private User teacher;
+    @ManyToOne
+    @JoinColumn(name = "teacherID")
+    private Teacher teacher;
 
     @OneToOne
     @JoinColumn(name = "dayID")
@@ -73,11 +74,11 @@ public class Lesson {
         this.studentsClass = studentsClass;
     }
 
-    public User getTeacher() {
+    public Teacher getTeacher() {
         return teacher;
     }
 
-    public void setTeacher(User teacher) {
+    public void setTeacher(Teacher teacher) {
         this.teacher = teacher;
     }
 

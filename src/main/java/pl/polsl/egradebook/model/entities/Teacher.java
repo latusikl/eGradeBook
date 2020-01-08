@@ -7,24 +7,32 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Entity
-@Table(name = "parents")
-public class Parent {
+@Table(name = "teachers")
+public class Teacher implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int parentID;
+    private int teacherID;
 
     @OneToOne
     @JoinColumn(name = "userID")
     private User user;
 
-    public int getParentID() {
-        return parentID;
+    @Override
+    public String toString() {
+        return "Teacher{" +
+                "user=" + user +
+                '}';
     }
 
-    public void setParentID(int parentID) {
-        this.parentID = parentID;
+    public int getTeacherID() {
+        return teacherID;
+    }
+
+    public void setTeacherID(int teacherID) {
+        this.teacherID = teacherID;
     }
 
     public User getUser() {
@@ -35,11 +43,4 @@ public class Parent {
         this.user = user;
     }
 
-    @Override
-    public String toString() {
-        return "Parent{" +
-                "parentID=" + parentID +
-                ", user=" + user +
-                '}';
-    }
 }

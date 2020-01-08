@@ -4,6 +4,9 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.StreamingHttpOutputMessage;
 import org.springframework.stereotype.Repository;
 import pl.polsl.egradebook.model.entities.User;
+import pl.polsl.egradebook.model.entities.Student;
+
+import java.util.List;
 
 /**
  Repository for executing SQL queries connected with User Entity.
@@ -11,4 +14,5 @@ import pl.polsl.egradebook.model.entities.User;
 @Repository
 public interface UserRepository extends CrudRepository<User,Integer> {
 	User findUserByUserName(String userName);
+
 }

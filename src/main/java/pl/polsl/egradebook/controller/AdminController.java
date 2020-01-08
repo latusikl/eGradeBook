@@ -1,6 +1,7 @@
 package pl.polsl.egradebook.controller;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,50 +16,61 @@ import javax.validation.Valid;
  Controller for user related operations via browser.
  */
 @Controller
-@RequestMapping("/user")
-public class UserController {
+@RequestMapping("/admin")
+public class AdminController {
 	
 	private final UserRepository userRepository;
 	private PasswordEncoder passwordEncoder;
 	
-	public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+	public AdminController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
 	}
 	
-	@GetMapping("/add")
-	@PreAuthorize("hasAuthority('/user/add')")
-	public String showSignUpForm(User user) {
-		return "user-add";
+	@PostMapping("/user/change/password")
+	@PreAuthorize("hasAuthority('/admin/user/change/password')")
+	public String changeUserPassword(@RequestParam User user){
+		if(userRepository.existsById(user.getUserID())){
+			user.setPassword(passwordEncoder.encode(user.getPassword()));
+			userRepository.save(user);
+		}
+		return "user-management";
 	}
 	
-	@PostMapping("/add")
+	@PostMapping("/user/add")
 	@PreAuthorize("hasAuthority('/user/add')")
-	public String addUser(@Valid User user, BindingResult bindingResult, Model model) {
+	public String addUser(@Valid User user, BindingResult bindingResult, String newPassword, Model model) {
 		if (bindingResult.hasErrors()) {
 			System.err.println("Binding user error addUser");
-			return "user-add";
+			model.addAttribute("users", userRepository.findAll());
+			
+			return "user-management";
 		}
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		userRepository.save(user);
 		model.addAttribute("users", userRepository.findAll());
-		return "user-show-all";
+		return "user-management";
 	}
 	
-	@GetMapping(path = "/delete/{userID}")
+	@GetMapping(path = "/user/delete/{userID}")
 	@PreAuthorize("hasAuthority('/user/delete/{userID}')")
-	public String deleteUser(@PathVariable("userID") int userID, Model model) {
+	public String deleteUser(@PathVariable("userID") int userID, Model model, User user, String newPassword) {
+		
 		User userToDelete = userRepository.findById(userID).orElseThrow(() -> new IllegalArgumentException("Invalid id:" + userID));
+		
 		userRepository.delete(userToDelete);
+		
 		model.addAttribute("users", userRepository.findAll());
-		return "user-show-all";
+		
+		return "user-management";
 	}
 	
-	@GetMapping(path = "/show/all")
+	@GetMapping(path = "/user/show/all")
 	@PreAuthorize("hasAuthority('/user/show/all')")
-	public String startUserManager(Model model) {
+	public String startUserManager(Model model, User user,String newPassword ,Authentication authentication) {
+		
 		model.addAttribute("users", userRepository.findAll());
-		return "user-show-all";
+		return "user-management";
 	}
 	
 }

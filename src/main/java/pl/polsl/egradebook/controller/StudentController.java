@@ -13,12 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pl.polsl.egradebook.model.entities.Case;
 import pl.polsl.egradebook.model.entities.Lesson;
 import pl.polsl.egradebook.model.entities.Student;
-import pl.polsl.egradebook.model.repositories.CaseRepository;
-import pl.polsl.egradebook.model.repositories.LessonRepository;
-import pl.polsl.egradebook.model.repositories.PresenceRepository;
-import pl.polsl.egradebook.model.repositories.GradeRepository;
-import pl.polsl.egradebook.model.repositories.StudentRepository;
-import pl.polsl.egradebook.model.repositories.UserRepository;
+import pl.polsl.egradebook.model.repositories.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -83,13 +78,12 @@ public class StudentController {
 		model.addAttribute("homeUrl", "/student/");
 		return "case-management";
 	}
-	
-	// not tested yet
+
 	@PostMapping("/cases/add")
 	@PreAuthorize("hasAuthority('/student/cases/add')")
 	public String addCase(@ModelAttribute("newCase") @Valid Case newCase, BindingResult bindingResult, Model model, Authentication authentication) {
 		if (bindingResult.hasErrors()) {
-			System.err.println("Binding user error addCase");
+			System.err.println("Binding case error addCase");
 			return "case-management";
 		}
 		Student loggedStudent = this.getStudentByUserName(authentication.getName());

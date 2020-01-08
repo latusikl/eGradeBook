@@ -17,10 +17,29 @@ public class Parent {
 
     @OneToOne
     @JoinColumn(name = "userID")
-    private User parent;
+    private User user;
 
-    @OneToOne
-    @JoinColumn(name = "childID",  referencedColumnName="userID")
-    private User child;
+    public int getParentID() {
+        return parentID;
+    }
 
+    public void setParentID(int parentID) {
+        this.parentID = parentID;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    @Override
+    public String toString() {
+        return "Parent{" +
+                "parentID=" + parentID +
+                ", user=" + user +
+                '}';
+    }
 }

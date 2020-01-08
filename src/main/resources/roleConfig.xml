@@ -25,6 +25,11 @@ Proper file format example:
         <access>/student/cases/add</access>
     </role>
     <role name="parent">
+        <access>/parent</access>
+        <access>/parent/cases/{caseID}</access>
+        <access>/parent/cases</access>
+        <access>/parent/cases/add</access>
+        <access>/parent/attendance/{presenceID}</access>
     </role>
     <role name="teacher">
         <access>/teacher</access>
@@ -38,5 +43,6 @@ Proper file format example:
         <access>/user/show/all</access>
         <access>/user/add</access>
         <access>/user/delete/{userID}</access>
+        <access>/admin/user/change/password</access>
     </role>
 </config>

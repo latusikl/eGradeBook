@@ -13,7 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pl.polsl.egradebook.model.entities.Case;
 import pl.polsl.egradebook.model.entities.Lesson;
 import pl.polsl.egradebook.model.entities.Student;
-import pl.polsl.egradebook.model.repositories.*;
+import pl.polsl.egradebook.model.repositories.CaseRepository;
+import pl.polsl.egradebook.model.repositories.LessonRepository;
+import pl.polsl.egradebook.model.repositories.PresenceRepository;
+import pl.polsl.egradebook.model.repositories.GradeRepository;
+import pl.polsl.egradebook.model.repositories.StudentRepository;
+import pl.polsl.egradebook.model.repositories.UserRepository;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -56,6 +61,29 @@ public class StudentController {
 				findByStudent_studentID(loggedStudent.getStudentID()));
 		model.addAttribute("lessons", lessons);
 		return "student-view";
+	}
+
+	@GetMapping(path = "/grades")
+	@PreAuthorize("hasAuthority('/student/grades')")
+	public String getStudentGradesView(Authentication authentication, Model model) {
+		String userName = authentication.getName();
+		Student loggedStudent = studentRepository.findByUser_UserName(userName);
+		model.addAttribute("student", loggedStudent);
+		model.addAttribute("grades", gradeRepository.
+				findByStudent_studentID(loggedStudent.getStudentID()));
+		return "student-grades-view";
+	}
+
+	@GetMapping(path = "/attendance")
+	@PreAuthorize("hasAuthority('/student/attendance')")
+	public String getStudentAttendanceView(Authentication authentication, Model model) {
+		String userName = authentication.getName();
+		Student loggedStudent = studentRepository.findByUser_UserName(userName);
+		int loggedStudentClassID = loggedStudent.getStudentsClass().getClassID();
+		model.addAttribute("student", loggedStudent);
+		model.addAttribute("attendance", presenceRepository.
+				findByStudent_studentID(loggedStudent.getStudentID()));
+		return "student-attendance-view";
 	}
 
 	@GetMapping(path = "/cases/{caseID}")

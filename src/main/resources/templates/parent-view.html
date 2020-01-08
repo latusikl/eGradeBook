@@ -23,8 +23,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-            <a class="nav-item nav-link active" href="/student/">Home <span class="sr-only">(current)</span></a>
-            <a class="nav-item nav-link" href="/student/cases">Cases </a>
+            <a class="nav-item nav-link active" href="/parent/">Home <span class="sr-only">(current)</span></a>
         </div>
     </div>
 </nav>
@@ -36,7 +35,7 @@
         </p>
     </h2>
     <div th:if="${child == null}">
-        <form method="post" th:action="${'parent/'}">
+        <form method="post" th:action="${'/parent/'}">
             <label for="childID">Select child</label>
             <select class="form-control" id="childID" name="childID">
                 <option th:each="child : ${children}"

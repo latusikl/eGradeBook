@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import pl.polsl.egradebook.model.entities.User;
 import pl.polsl.egradebook.model.repositories.UserRepository;
 
@@ -29,9 +30,9 @@ public class AdminController {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
 	}
-	
+
 	@PostMapping("/user/change/password")
-	@PreAuthorize("hasAuthority('/admin/user/change/password')")
+	@PreAuthorize("hasAuthority('/user/change/password')")
 	public String changeUserPassword(@RequestParam User user){
 		if(userRepository.existsById(user.getUserID())){
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -67,9 +68,9 @@ public class AdminController {
 		
 		return "user-management";
 	}
-	
+
 	@GetMapping(path = "/user/show/all")
-	@PreAuthorize("hasAuthority('/user/show/all')")
+	@PreAuthorize("hasAuthority('/admin/user/show/all')")
 	public String startUserManager(Model model, User user,String newPassword ,Authentication authentication) {
 		
 		model.addAttribute("users", userRepository.findAll());

@@ -23,14 +23,15 @@
         </div>
     </div>
 </nav>
-<div th:switch="${users}">
-    <h4 class="text-danger" th:case="null">No users yet!</h4>
-    <br/>
-    <br/>
-    <h5>Welcome to user management console</h5>
-    <h6>Users available in system:</h6>
-    <br/>
-    <div style="text-align: center" th:case="*">
+<div class="container">
+    <div th:switch="${users}">
+        <h4 class="text-danger" th:case="null">No users yet!</h4>
+        <br/>
+        <br/>
+        <h5>Welcome to user management console</h5>
+        <h6>Users available in system:</h6>
+        <br/>
+        <div style="text-align: center" th:case="*">
             <table class="table table-striped">
                 <thead class="thead-dark">
                 <tr>
@@ -58,76 +59,82 @@
                 </tr>
                 </tbody>
             </table>
+        </div>
+        <br/>
+        <br/>
+        <div class="container">
+            <form action="#" method="post" th:action="@{/admin/user/add}" th:object="${user}">
+                <div class="form-group">
+                    <br/>
+                    <h5 class="text-light bg-dark">Add user:</h5>
+                    <br/>
+                    <div class="row">
+                        <div class="col">
+                            <label for="name">Name</label>
+                            <input type="text" th:field="*{name}" id="name" placeholder="Name" class="form-control">
+                            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+                            <br/>
+                            <label for="password">Password</label>
+                            <input type="text" th:field="*{password}" id="password" placeholder="Password"
+                                   class="form-control">
+                            <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+                        </div>
+                        <div class="col">
+                            <label for="surname">Surname</label>
+                            <input type="text" th:field="*{surname}" id="surname" placeholder="Surname"
+                                   class="form-control">
+                            <span th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></span>
+                            <br/>
+                            <label for="email">Email</label>
+                            <input type="text" th:field="*{email}" id="email" placeholder="Email" class="form-control">
+                            <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                        </div>
+                        <div class="col">
+                            <label for="userName">User Name</label>
+                            <input type="text" th:field="*{userName}" id="userName" placeholder="UserName"
+                                   class="form-control">
+                            <span th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}"></span>
+                            <br/>
+                            <label for="roleType">Role Type</label>
+                            <input type="text" th:field="*{roleType}" id="roleType" placeholder="RoleType"
+                                   class="form-control">
+                            <span th:if="${#fields.hasErrors('roleType')}" th:errors="*{roleType}"></span>
+                            <br/>
+                            <input type="submit" value="Add User" class="btn btn-secondary">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
-    <br/>
-    <br/>
     <div class="container">
-        <form action="#" method="post" th:action="@{/admin/user/add}" th:object="${user}">
+        <form action="#" method="post" th:action="@{/admin/user/change/password}" th:object="${user}">
             <div class="form-group">
                 <br/>
-                <h5 class="text-light bg-dark">Add user:</h5>
+                <h5 class="text-light bg-dark">Change password:</h5>
                 <br/>
-        <div class="row">
-            <div class="col">
-                <label for="name">Name</label>
-                <input type="text" th:field="*{name}" id="name" placeholder="Name" class="form-control">
-                <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
-                <br/>
-                <label for="password">Password</label>
-                <input type="text" th:field="*{password}" id="password" placeholder="Password" class="form-control">
-                <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
-            </div>
-            <div class="col">
-                <label for="surname">Surname</label>
-                <input type="text" th:field="*{surname}" id="surname" placeholder="Surname" class="form-control">
-                <span th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></span>
-                <br/>
-                <label for="email">Email</label>
-                <input type="text" th:field="*{email}" id="email" placeholder="Email" class="form-control">
-                <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
-            </div>
-            <div class="col">
-                <label for="userName">User Name</label>
-                <input type="text" th:field="*{userName}" id="userName" placeholder="UserName" class="form-control">
-                <span th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}"></span>
-                <br/>
-                <label for="roleType">Role Type</label>
-                <input type="text" th:field="*{roleType}" id="roleType" placeholder="RoleType" class="form-control">
-                <span th:if="${#fields.hasErrors('roleType')}" th:errors="*{roleType}"></span>
-                <br/>
-                <input type="submit" value="Add User" class="btn btn-secondary">
-            </div>
-        </div>
+                <div class="row">
+                    <div class="col">
+                        <br/>
+                        <label for="userToShow">User</label>
+                        <select id="userToShow" th:object="${user}">
+                            <option th:each=" userToShow : ${users}"
+                                    th:value="${userToShow}" th:text="${userToShow.getUserName()}"></option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <br/>
+                        <input type="text" id="passwordToSet" th:field="*{password}" placeholder="New password"
+                               class="form-control">
+                    </div>
+                    <div class="col">
+                        <br/>
+                        <input type="submit" value="Change password" class="btn btn-secondary">
+                    </div>
+                </div>
             </div>
         </form>
     </div>
-</div>
-<div class="container">
-    <form action="#" method="post" th:action="@{/admin/user/change/password}" th:object="${user}">
-        <div class="form-group">
-            <br/>
-            <h5 class="text-light bg-dark">Change password:</h5>
-            <br/>
-            <div class="row">
-                <div class="col">
-                    <br/>
-                    <label for="userToShow">User</label>
-                    <select id="userToShow"  th:object="${user}">
-                        <option th:each=" userToShow : ${users}"
-                                th:value="${userToShow}" th:text="${userToShow.getUserName()}"></option>
-                    </select>
-                </div>
-                <div class="col">
-                    <br/>
-                    <input type="text" id="passwordToSet" th:field="*{password}"  placeholder="New password" class="form-control">
-                </div>
-                <div class="col">
-                    <br/>
-                    <input type="submit" value="Change password" class="btn btn-secondary">
-                </div>
-            </div>
-        </div>
-    </form>
 </div>
 </body>
 </html>

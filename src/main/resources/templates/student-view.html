@@ -27,7 +27,7 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Logout</a>
+    <a class="navbar-brand" href="/logout">Logout</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
             aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -43,7 +43,11 @@
 </nav>
 <div class="container">
 
+    <h2>
+        <p>Hello <span th:text="${student.user.name}"  />
+            <span th:text="${student.user.surname}"  />! </p>
 
+    </h2>
     <div class="row1 "style="text-align: center;">
     <div th:switch="${lessons}">
         <h2 th:case="null">No lessons yet!</h2>
@@ -140,6 +144,7 @@
                     </tr>
                     </tbody>
                 </table>
+            </div>
             </div>
         </div>
         </div>

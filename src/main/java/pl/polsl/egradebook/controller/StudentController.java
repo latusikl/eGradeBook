@@ -38,7 +38,7 @@ public class StudentController {
 	private final UserRepository userRepository;
 	
 	private final LessonRepository lessonRepository;
-	
+
 	public StudentController(StudentRepository studentRepository, GradeRepository gradeRepository, PresenceRepository presenceRepository, CaseRepository caseRepository, UserRepository userRepository, LessonRepository lessonRepository) {
 		this.studentRepository = studentRepository;
 		this.gradeRepository = gradeRepository;
@@ -51,8 +51,7 @@ public class StudentController {
 	@GetMapping()
 	@PreAuthorize("hasAuthority('/student')")
 	public String getStudentView(Authentication authentication, Model model) {
-		String userName = authentication.getName();
-		Student loggedStudent = studentRepository.findByUser_UserName(userName);
+		Student loggedStudent = this.getStudentByUserName(authentication.getName());
 		int loggedStudentClassID = loggedStudent.getStudentsClass().getClassID();
 		List<Lesson> lessons = lessonRepository.findAllByStudentsClass_ClassID(loggedStudentClassID);
 		model.addAttribute("student", loggedStudent);
@@ -63,24 +62,25 @@ public class StudentController {
 		model.addAttribute("lessons", lessons);
 		return "student-view";
 	}
-	
+
 	@GetMapping(path = "/cases/{caseID}")
 	@PreAuthorize("hasAuthority('/student/cases/{caseID}')")
-	public String deleteUser(@PathVariable("caseID") int caseID, Model model) {
+	public String selectedCase(@PathVariable("caseID") int caseID, Model model) {
 		Case foundCase = caseRepository.findById(caseID).orElseThrow(() -> new IllegalArgumentException("Invalid id:" + caseID));
 		model.addAttribute("case", foundCase);
+		model.addAttribute("homeUrl", "/student/");
 		return "case-content-view";
 	}
 	
 	@GetMapping("/cases")
 	@PreAuthorize("hasAuthority('/student/cases')")
 	public String getCaseManagementSite(Authentication authentication, Model model) {
-		String userName = authentication.getName();
-		Student loggedStudent = studentRepository.findByUser_UserName(userName);
+		Student loggedStudent = this.getStudentByUserName(authentication.getName());
 		model.addAttribute("cases", caseRepository.
 				findByReceiver_UserID(loggedStudent.getUser().getUserID()));
 		model.addAttribute("users", userRepository.findAll());
 		model.addAttribute("newCase", new Case());
+		model.addAttribute("homeUrl", "/student/");
 		return "case-management";
 	}
 	
@@ -92,13 +92,17 @@ public class StudentController {
 			System.err.println("Binding user error addCase");
 			return "case-management";
 		}
-		String userName = authentication.getName();
-		Student loggedStudent = studentRepository.findByUser_UserName(userName);
+		Student loggedStudent = this.getStudentByUserName(authentication.getName());
 		newCase.setSender(loggedStudent.getUser());
 		caseRepository.save(newCase);
+		model.addAttribute("homeUrl", "/student/");
 		model.addAttribute("cases", caseRepository.
 				findByReceiver_UserID(loggedStudent.getUser().getUserID()));
 		return "case-management";
 	}
-	
+
+	private Student getStudentByUserName(String userName) {
+		return studentRepository.findByUser_UserName(userName);
+	}
+
 }

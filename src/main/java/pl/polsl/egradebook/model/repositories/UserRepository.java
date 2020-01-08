@@ -1,7 +1,6 @@
 package pl.polsl.egradebook.model.repositories;
 
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.http.StreamingHttpOutputMessage;
 import org.springframework.stereotype.Repository;
 import pl.polsl.egradebook.model.entities.User;
 

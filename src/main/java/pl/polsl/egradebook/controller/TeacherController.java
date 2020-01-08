@@ -55,8 +55,6 @@ public class TeacherController {
 
     private final CaseRepository caseRepository;
 
-    private final String homeUrl;
-    
     public TeacherController(TeacherRepository teacherRepository, StudentRepository studentRepository, LessonRepository lessonRepository, UserRepository userRepository, GradeRepository gradeRepository, StudentsClassRepository studentsClassRepository, PresenceRepository presenceRepository, CaseRepository caseRepository) {
         this.teacherRepository = teacherRepository;
         this.studentRepository = studentRepository;
@@ -66,20 +64,17 @@ public class TeacherController {
         this.studentsClassRepository = studentsClassRepository;
         this.presenceRepository = presenceRepository;
         this.caseRepository = caseRepository;
-        this.homeUrl = "/teacher/";
     }
     
     @GetMapping()
     @PreAuthorize("hasAuthority('/teacher')")
     public String viewGradesAndAttendance(Authentication authentication, Model model) {
-        String userName = authentication.getName();
-        User loggedTeacher = userRepository.findUserByUserName(userName);
+        User loggedTeacher = this.getTeacherByUserName(authentication.getName()).getUser();
         Iterable<Student> classStudents = studentRepository.findAll();
         model.addAttribute("teacher", loggedTeacher);
         model.addAttribute("grades", gradeRepository.findAllByOrderByStudent_User_SurnameAsc());
         model.addAttribute("attendance", presenceRepository.findAllByLesson_Teacher_User_UserID_OrderByDateDesc(loggedTeacher.getUserID()));
         model.addAttribute("students", studentRepository.findAll());
-        model.addAttribute("homeUrl",homeUrl);
         return "teacher-view";
     }
 
@@ -89,12 +84,12 @@ public class TeacherController {
     public String selectedCase(@PathVariable("caseID") int caseID, Model model) {
         Case foundCase = caseRepository.findById(caseID).orElseThrow(() -> new IllegalArgumentException("Invalid id:" + caseID));
         model.addAttribute("case", foundCase);
-        model.addAttribute("homeUrl",homeUrl);
+        model.addAttribute("homeUrl","/teacher/");
         return "case-content-view";
     }
 
     //submits changed attendances for selected class
-    //returns attendance-management.html with model attribute submitSuccessful set to true to show the message on page
+    //returns teacher-attendance-management.html with model attribute submitSuccessful set to true to show the message on page
     @PostMapping("/attendance/submit")
     @PreAuthorize("hasAuthority('/teacher/attendance/submit')")
     public String submitAttendance(ListWrapper listWrapper, Model model,Authentication authentication)
@@ -104,45 +99,39 @@ public class TeacherController {
         {
             presenceRepository.save(p);
         }
-        String userName=authentication.getName();
-        Teacher loggedTeacher = teacherRepository.findByUser_UserName(userName);
+        Teacher loggedTeacher=this.getTeacherByUserName(authentication.getName());
         int teacherID=loggedTeacher.getTeacherID();
-        model.addAttribute("homeUrl",homeUrl);
         model.addAttribute("submitSuccessful",true);
         model.addAttribute("todayDate",new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         model.addAttribute("lessons",lessonRepository.findAllByTeacher_TeacherID(teacherID));
-        return "attendance-management";
+        return "teacher-attendance-management";
     }
 
     //shows dropdown box with classes and enables class selection for changing attendances
     //sends selected lesson with post to the same page, along with the selected date from date picker
-    //returns attendance-management.html with model attribute newInstance set to true to suppress all messages about empty date and list of students
+    //returns teacher-attendance-management.html with model attribute newInstance set to true to suppress all messages about empty date and list of students
     @GetMapping("/attendance")
     @PreAuthorize("hasAuthority('/teacher/attendance')")
     public String checkAttendance(Authentication authentication, Model model)
     {
-        String userName=authentication.getName();
-        Teacher loggedTeacher = teacherRepository.findByUser_UserName(userName);
+        Teacher loggedTeacher=this.getTeacherByUserName(authentication.getName());
         int teacherID=loggedTeacher.getTeacherID();
-        model.addAttribute("homeUrl",homeUrl);
         model.addAttribute("newInstance",true);
         model.addAttribute("todayDate",new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         model.addAttribute("lessons",lessonRepository.findAllByTeacher_TeacherID(teacherID));
-        return "attendance-management";
+        return "teacher-attendance-management";
     }
 
     //shows all students in class for easy setting of attendance in selected lesson
     //gets selected lesson with post from the dropdown list along with selected date
     //sets model attributes selectedDate and studentsFound to false to warn about incorrect or nonsensical input
-    //submits the data if correct using the second form in attendance-management.html to /teacher/attendance/submit
+    //submits the data if correct using the second form in teacher-attendance-management.html to /teacher/attendance/submit
     @PostMapping("/attendance")
     @PreAuthorize("hasAuthority('/teacher/attendance')")
     public String checkAttendancePost(Authentication authentication, Model model, @RequestParam("selectedLesson") int selectedLesson, @RequestParam("selectedDate") String selectedDate)
     {
-        String userName=authentication.getName();
-        Teacher loggedTeacher = teacherRepository.findByUser_UserName(userName);
+        Teacher loggedTeacher=this.getTeacherByUserName(authentication.getName());
         int teacherID=loggedTeacher.getTeacherID();
-        model.addAttribute("homeUrl",homeUrl);
         model.addAttribute("todayDate",new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         model.addAttribute("lessons",lessonRepository.findAllByTeacher_TeacherID(teacherID));
 
@@ -175,19 +164,18 @@ public class TeacherController {
                 model.addAttribute("studentsAttendance", listWrapper);
             }
         }
-        return "attendance-management";
+        return "teacher-attendance-management";
     }
     //case management view copied from student
     @GetMapping("/cases")
     @PreAuthorize("hasAuthority('/teacher/cases')")
     public String getCaseManagementSite(Authentication authentication, Model model) {
-        String userName = authentication.getName();
-        User loggedTeacher = userRepository.findUserByUserName(userName);
+        User loggedTeacher = this.getTeacherByUserName(authentication.getName()).getUser();
         model.addAttribute("cases", caseRepository.
                 findByReceiver_UserID(loggedTeacher.getUserID()));
         model.addAttribute("users", userRepository.findAll());
         model.addAttribute("newCase", new Case());
-        model.addAttribute("homeUrl",homeUrl);
+        model.addAttribute("homeUrl","/teacher/");
         return "case-management";
     }
 
@@ -200,16 +188,18 @@ public class TeacherController {
             return "case-management";
         }
 
-        model.addAttribute("homeUrl",homeUrl);
-        String userName = authentication.getName();
-        Student loggedStudent = studentRepository.findByUser_UserName(userName);
-        newCase.setSender(loggedStudent.getUser());
+        model.addAttribute("homeUrl","/teacher/");
+        User loggedTeacher = this.getTeacherByUserName(authentication.getName()).getUser();
+        newCase.setSender(loggedTeacher);
         caseRepository.save(newCase);
-        model.addAttribute("cases", caseRepository.findByReceiver_UserID(loggedStudent.getUser().getUserID()));
+        model.addAttribute("cases", caseRepository.findByReceiver_UserID(loggedTeacher.getUserID()));
 
         return "case-management";
     }
-
+    private Teacher getTeacherByUserName(String userName)
+    {
+        return teacherRepository.findByUser_UserName(userName);
+    }
     //list wrapper used to wrap the presence list and send it via post
     class ListWrapper
     {

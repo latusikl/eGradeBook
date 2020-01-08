@@ -25,14 +25,14 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-            <a class="nav-item nav-link active"  th:href="${homeUrl}">Home </a>
-            <a class="nav-item nav-link active" th:href="${homeUrl+'cases/'}">Cases <span class="sr-only">(current)</span></a>
-            <a class="nav-item nav-link " th:href="${homeUrl+'attendance/'}">Attendances</a>
+            <a class="nav-item nav-link active"  href="/teacher/">Home </a>
+            <a class="nav-item nav-link active" href="/teacher/cases/}">Cases <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link " href="/teacher/attendance/">Attendances</a>
         </div>
     </div>
 </nav>
 <div class="container">
-    <form method="post" th:action="${homeUrl+'attendance/'}" >
+    <form method="post" th:action="${'/teacher/attendance'}" >
         <div class="form-group">
             <label for="selectedLesson">Select Lesson</label>
             <label for="selectedDate">Select lesson date</label>

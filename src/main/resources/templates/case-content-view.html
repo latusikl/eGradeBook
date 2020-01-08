@@ -9,7 +9,22 @@
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>Case content</title>
 </head>
-<body th:style="'background: url(' + @{/pictures/gray_background5.jpg} + '); background-size: cover; width: 100%; height: 100%'" >
+<body  th:style="'background: url(' + @{/pictures/gray_background5.jpg} + '); background-size: cover; width: 100%; height: 100%'" >
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Logout</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+
+            <a class="nav-item nav-link" th:href="${homeUrl}">Home </a>
+            <a class="nav-item nav-link active" th:href="${homeUrl+'cases/'}">Cases <span
+                    class="sr-only">(current)</span></a>
+        </div>
+    </div>
+</nav>
 <div class="container">
     <h5>Case sender:
         <span th:text="${case.sender.name + ' ' + case.sender.surname}" />
@@ -18,8 +33,8 @@
         <span th:text="${case.topic}" />
     </h5>
     <p class="text-justify" th:text="${case.content}" />
-    <form th:action="@{/student/cases}" method="get">
-        <button type="submit" class="btn btn-secondary">Back to case management</button>
+    <form th:action="${homeUrl+'cases/'}" method="get">
+        <button type="submit" class="btn btn-primary">Back to case management</button>
     </form>
 </div>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

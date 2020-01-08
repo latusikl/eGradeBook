@@ -33,14 +33,16 @@ Proper file format example:
     </role>
     <role name="teacher">
         <access>/teacher</access>
+        <access>/teacher/attendance</access>
+        <access>/teacher/attendance/submit</access>
         <access>/teacher/cases/{caseID}</access>
         <access>/teacher/cases</access>
         <access>/teacher/cases/add</access>
     </role>
     <role name="admin">
-        <access>/user/show/all</access>
         <access>/user/add</access>
         <access>/user/delete/{userID}</access>
         <access>/admin/user/change/password</access>
+        <access>/admin/user/show/all</access>
     </role>
 </config>

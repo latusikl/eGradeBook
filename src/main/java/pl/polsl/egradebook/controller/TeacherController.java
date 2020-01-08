@@ -100,7 +100,6 @@ public class TeacherController {
     public String submitAttendance(ListWrapper listWrapper, Model model,Authentication authentication)
     {
         List<Presence> studentAttendance=listWrapper.getList();
-        System.out.println(studentAttendance);
         for(Presence p: studentAttendance)
         {
             presenceRepository.save(p);
@@ -174,7 +173,6 @@ public class TeacherController {
                 ListWrapper listWrapper = new ListWrapper();
                 listWrapper.setList(newPresences);
                 model.addAttribute("studentsAttendance", listWrapper);
-                System.out.print(newPresences);
             }
         }
         return "attendance-management";

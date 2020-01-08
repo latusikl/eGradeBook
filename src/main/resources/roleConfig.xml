@@ -41,5 +41,6 @@ Proper file format example:
         <access>/user/show/all</access>
         <access>/user/add</access>
         <access>/user/delete/{userID}</access>
+        <access>/admin/user/change/password</access>
     </role>
 </config>

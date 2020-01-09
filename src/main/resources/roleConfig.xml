@@ -23,6 +23,7 @@ Proper file format example:
         <access>/student/cases/{caseID}</access>
         <access>/student/cases</access>
         <access>/student/cases/add</access>
+        <access>/student/cases/reply</access>
         <access>/student/grades</access>
         <access>/student/attendance</access>
     </role>
@@ -31,6 +32,7 @@ Proper file format example:
         <access>/parent/cases/{caseID}</access>
         <access>/parent/cases</access>
         <access>/parent/cases/add</access>
+        <access>/parent/cases/reply</access>
         <access>/parent/attendance/{presenceID}</access>
     </role>
     <role name="teacher">
@@ -40,6 +42,7 @@ Proper file format example:
         <access>/teacher/cases/{caseID}</access>
         <access>/teacher/cases</access>
         <access>/teacher/cases/add</access>
+        <access>/teacher/cases/reply</access>
     </role>
     <role name="admin">
         <access>/user/add</access>

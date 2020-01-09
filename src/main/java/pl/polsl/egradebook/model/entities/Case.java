@@ -27,8 +27,6 @@ public class Case {
     @NotNull
     private String topic;
 
-    @NotNull
-    private String content;
 
     public int getCaseID() {
         return caseID;
@@ -62,13 +60,6 @@ public class Case {
         this.topic = topic;
     }
 
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
 
     @Override
     public String toString() {
@@ -77,7 +68,6 @@ public class Case {
                 ", sender=" + sender +
                 ", receiver=" + receiver +
                 ", topic='" + topic + '\'' +
-                ", content='" + content + '\'' +
                 '}';
     }
 }

@@ -27,12 +27,26 @@
 </nav>
 <div class="container">
     <h5>Case sender:
-        <span th:text="${case.sender.name + ' ' + case.sender.surname}" />
+        <span th:text="${case.sender.name + ' ' + case.sender.surname}"/>
+    </h5>
+    <h5>Case receiver:
+        <span th:text="${case.receiver.name + ' ' + case.receiver.surname}"/>
     </h5>
     <h5>Case topic:
-        <span th:text="${case.topic}" />
+        <span th:text="${case.topic}"/>
     </h5>
-    <p class="text-justify" th:text="${case.content}" />
+    <div th:each="m: ${messages}">
+        <span th:text="${'['+m.sender.name+' '+m.sender.surname+'] '+m.content}"/>
+    </div>
+    <br>
+    <form th:action="${homeUrl+'cases/reply/'}" method="post">
+        <input type="hidden" th:value="${case.caseID}" th:name="caseID"/>
+        <label for="content"><b>Create new message</b></label>
+        <input type="text" class="form-control" id="content" name="content" placeholder="Content"></input>
+        <br>
+        <button type="submit" class="btn btn-primary">Reply to this case</button>
+    </form>
+    <br>
     <form th:action="${homeUrl+'cases/'}" method="get">
         <button type="submit" class="btn btn-primary">Back to case management</button>
     </form>

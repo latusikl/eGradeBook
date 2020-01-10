@@ -4,7 +4,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.polsl.egradebook.model.entities.Case;
+import pl.polsl.egradebook.model.entities.Message;
 import pl.polsl.egradebook.model.entities.Presence;
 import pl.polsl.egradebook.model.entities.Student;
 import pl.polsl.egradebook.model.entities.StudentsClass;
@@ -20,14 +20,15 @@ import pl.polsl.egradebook.model.entities.User;
 import pl.polsl.egradebook.model.repositories.CaseRepository;
 import pl.polsl.egradebook.model.repositories.GradeRepository;
 import pl.polsl.egradebook.model.repositories.LessonRepository;
+import pl.polsl.egradebook.model.repositories.MessageRepository;
 import pl.polsl.egradebook.model.repositories.PresenceRepository;
 import pl.polsl.egradebook.model.repositories.StudentRepository;
 import pl.polsl.egradebook.model.repositories.StudentsClassRepository;
 import pl.polsl.egradebook.model.repositories.TeacherRepository;
 import pl.polsl.egradebook.model.repositories.UserRepository;
 import pl.polsl.egradebook.model.util.StringValidator;
+import pl.polsl.egradebook.model.util.UrlValidator;
 
-import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -55,7 +56,9 @@ public class TeacherController {
 
     private final CaseRepository caseRepository;
 
-    public TeacherController(TeacherRepository teacherRepository, StudentRepository studentRepository, LessonRepository lessonRepository, UserRepository userRepository, GradeRepository gradeRepository, StudentsClassRepository studentsClassRepository, PresenceRepository presenceRepository, CaseRepository caseRepository) {
+    private final MessageRepository messageRepository;
+
+    public TeacherController(TeacherRepository teacherRepository, StudentRepository studentRepository, LessonRepository lessonRepository, UserRepository userRepository, GradeRepository gradeRepository, StudentsClassRepository studentsClassRepository, PresenceRepository presenceRepository, CaseRepository caseRepository, MessageRepository messageRepository) {
         this.teacherRepository = teacherRepository;
         this.studentRepository = studentRepository;
         this.lessonRepository = lessonRepository;
@@ -64,6 +67,7 @@ public class TeacherController {
         this.studentsClassRepository = studentsClassRepository;
         this.presenceRepository = presenceRepository;
         this.caseRepository = caseRepository;
+        this.messageRepository = messageRepository;
     }
 
     @GetMapping()
@@ -76,16 +80,6 @@ public class TeacherController {
         model.addAttribute("attendance", presenceRepository.findAllByLesson_Teacher_User_UserID_OrderByDateDesc(loggedTeacher.getUserID()));
         model.addAttribute("students", studentRepository.findAll());
         return "teacher-view";
-    }
-
-    //cases view for the teacher, coppied from student
-    @GetMapping(path = "/cases/{caseID}")
-    @PreAuthorize("hasAuthority('/teacher/cases/{caseID}')")
-    public String selectedCase(@PathVariable("caseID") int caseID, Model model) {
-        Case foundCase = caseRepository.findById(caseID).orElseThrow(() -> new IllegalArgumentException("Invalid id:" + caseID));
-        model.addAttribute("case", foundCase);
-        model.addAttribute("homeUrl", "/teacher/");
-        return "case-content-view";
     }
 
     //submits changed attendances for selected class
@@ -162,39 +156,72 @@ public class TeacherController {
         return "teacher-attendance-management";
     }
 
-    //case management view copied from student
+    //case management
     @GetMapping("/cases")
     @PreAuthorize("hasAuthority('/teacher/cases')")
     public String getCaseManagementSite(Authentication authentication, Model model) {
         User loggedTeacher = this.getTeacherByUserName(authentication.getName()).getUser();
-        model.addAttribute("cases", caseRepository.
-                findByReceiver_UserID(loggedTeacher.getUserID()));
+        model.addAttribute("cases", caseRepository.findByReceiver_UserIDOrSender_UserID(loggedTeacher.getUserID(), loggedTeacher.getUserID()));
         model.addAttribute("users", userRepository.findAll());
         model.addAttribute("newCase", new Case());
-        model.addAttribute("homeUrl", "/teacher/");
+        this.addHomeUrl(model);
         return "case-management";
     }
 
-    // add case view copied from student
+    // add case
     @PostMapping("/cases/add")
     @PreAuthorize("hasAuthority('/teacher/cases/add')")
-    public String addCase(@ModelAttribute("newCase") @Valid Case newCase, BindingResult bindingResult, Model model, Authentication authentication) {
-        if (bindingResult.hasErrors()) {
-            System.err.println("Binding user error addCase");
-            return "case-management";
-        }
+    public String addCase(@ModelAttribute("newCase") Case newCase, @RequestParam("content") String msgContent, Model model, Authentication authentication) {
 
-        model.addAttribute("homeUrl", "/teacher/");
         User loggedTeacher = this.getTeacherByUserName(authentication.getName()).getUser();
+
         newCase.setSender(loggedTeacher);
         caseRepository.save(newCase);
         model.addAttribute("cases", caseRepository.findByReceiver_UserID(loggedTeacher.getUserID()));
+        Message newMessage = new Message();
+        newMessage.setContent(msgContent);
+        newMessage.setReferencedCase(newCase);
+        newMessage.setSender(userRepository.findUserByUserName(authentication.getName()));
+        messageRepository.save(newMessage);
 
-        return "case-management";
+        this.addHomeUrl(model);
+        return "redirect:/teacher/cases/" + newCase.getCaseID() + "/";
+    }
+
+    //cases view for the teacher
+    @GetMapping(path = "/cases/{caseID}")
+    @PreAuthorize("hasAuthority('/teacher/cases/{caseID}')")
+    public String selectedCase(@PathVariable("caseID") int caseID, Model model, Authentication authentication) {
+
+        Teacher loggedTeacher = this.getTeacherByUserName(authentication.getName());
+        if (!UrlValidator.canAccessCase(caseID, loggedTeacher.getUser().getUserID(), caseRepository))
+            return "access-denied";
+        Case foundCase = caseRepository.findByCaseID(caseID);
+        model.addAttribute("case", foundCase);
+        List<Message> messages = messageRepository.findAllByReferencedCase_CaseID(caseID);
+        model.addAttribute("messages", messages);
+        this.addHomeUrl(model);
+        return "case-content-view";
+    }
+
+    //reply to case
+    @PostMapping(path = "/cases/reply")
+    @PreAuthorize("hasAuthority('/teacher/cases/reply')")
+    public String replyToCase(@RequestParam("caseID") int caseID, @RequestParam("content") String content, Authentication authentication) {
+        Message newMessage = new Message();
+        newMessage.setReferencedCase(caseRepository.findByCaseID(caseID));
+        newMessage.setContent(content);
+        newMessage.setSender(userRepository.findUserByUserName(authentication.getName()));
+        messageRepository.save(newMessage);
+        return "redirect:/teacher/cases/" + caseID + "/";
     }
 
     private Teacher getTeacherByUserName(String userName) {
         return teacherRepository.findByUser_UserName(userName);
+    }
+
+    private void addHomeUrl(Model model) {
+        model.addAttribute("homeUrl", "/teacher/");
     }
 
     //list wrapper used to wrap the presence list and send it via post

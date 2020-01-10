@@ -66,14 +66,15 @@ public class ParentController {
     @PreAuthorize("hasAuthority('/parent')")
     public String selectChild(Authentication authentication, Model model) {
 
-        Parent loggedParent = this.getParentByUserName(authentication.getName());
+        Parent loggedParent = this.getLoggedParent(authentication.getName());
         List<Student> children = studentRepository.findAllByParent_ParentID(loggedParent.getParentID());
         model.addAttribute("parent", loggedParent);
-        model.addAttribute("children", children);
-        if (children != null && children.size() == 1) {
-            model.addAttribute("childSelected", true);
+        if (children != null && children.size() > 1) {
+            model.addAttribute("children", children);
         } else {
-            model.addAttribute("childSelected", false);
+            Student child = children.get(0);
+            model.addAttribute("child", children.get(0));
+            parentViewAttributesWhenOnlyOneChild(model, loggedParent, child);
         }
         return "parent-view";
     }
@@ -81,8 +82,13 @@ public class ParentController {
     @PostMapping()
     @PreAuthorize("hasAuthority('/parent')")
     public String getParentView(@RequestParam int childID, Authentication authentication, Model model) {
-        Parent loggedParent = this.getParentByUserName(authentication.getName());
+        Parent loggedParent = getLoggedParent(authentication.getName());
         Student child = studentRepository.findById(childID);
+        parentViewAttributesWhenOnlyOneChild(model, loggedParent, child);
+        return "parent-view";
+    }
+
+    private void parentViewAttributesWhenOnlyOneChild(Model model, Parent loggedParent, Student child) {
         int loggedStudentClassID = child.getStudentsClass().getClassID();
         List<Lesson> lessons = lessonRepository.findAllByStudentsClass_ClassID(loggedStudentClassID);
         model.addAttribute("child", child);
@@ -92,8 +98,6 @@ public class ParentController {
         model.addAttribute("absences", presenceRepository.
                 findByStudent_studentIDAndPresent(child.getStudentID(), false));
         model.addAttribute("lessons", lessons);
-        model.addAttribute("childSelected", true);
-        return "parent-view";
     }
 
     @GetMapping(path = "/attendance/{presenceID}")
@@ -111,7 +115,7 @@ public class ParentController {
     @PreAuthorize("hasAuthority('/parent/cases/{caseID}')")
     public String selectedCase(@PathVariable("caseID") int caseID, Model model, Authentication authentication) {
 
-        Parent loggedParent = this.getParentByUserName(authentication.getName());
+        Parent loggedParent = this.getLoggedParent(authentication.getName());
         if (!UrlValidator.canAccessCase(caseID, loggedParent.getUser().getUserID(), caseRepository))
             return "access-denied";
         Case foundCase = caseRepository.findByCaseID(caseID);
@@ -126,7 +130,7 @@ public class ParentController {
     @GetMapping("/cases")
     @PreAuthorize("hasAuthority('/parent/cases')")
     public String getCaseManagementSite(Authentication authentication, Model model) {
-        User loggedParent = this.getParentByUserName(authentication.getName()).getUser();
+        User loggedParent = this.getLoggedParent(authentication.getName()).getUser();
         model.addAttribute("cases", caseRepository.findByReceiver_UserIDOrSender_UserID(loggedParent.getUserID(), loggedParent.getUserID()));
         model.addAttribute("users", userRepository.findAll());
         model.addAttribute("newCase", new Case());
@@ -139,7 +143,7 @@ public class ParentController {
     @PreAuthorize("hasAuthority('/parent/cases/add')")
     public String addCase(@ModelAttribute("newCase") Case newCase, @RequestParam("content") String msgContent, Model model, Authentication authentication) {
 
-        User loggedParent = this.getParentByUserName(authentication.getName()).getUser();
+        User loggedParent = this.getLoggedParent(authentication.getName()).getUser();
         newCase.setSender(loggedParent);
 
         caseRepository.save(newCase);
@@ -166,11 +170,11 @@ public class ParentController {
         return "redirect:/parent/cases/" + caseID + "/";
     }
 
-    private Parent getParentByUserName(String userName) {
-        return parentRepository.findByUser_UserName(userName);
-    }
-
     private void addHomeUrl(Model model) {
         model.addAttribute("homeUrl", "/parent/");
+    }
+
+    private Parent getLoggedParent(String userName) {
+        return parentRepository.findByUser_UserName(userName);
     }
 }

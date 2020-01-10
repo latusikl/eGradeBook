@@ -46,6 +46,12 @@ Proper file format example:
         <access>/teacher/cases/add</access>
         <access>/teacher/cases/reply</access>
     </role>
+    <role name="headmaster">
+        <access>/headmaster</access>
+        <access>/headmaster/grades</access>
+        <access>/headmaster/absence</access>
+        <access>/headmaster/overview</access>
+    </role>
     <role name="admin">
         <access>/user/add</access>
         <access>/user/delete/{userID}</access>

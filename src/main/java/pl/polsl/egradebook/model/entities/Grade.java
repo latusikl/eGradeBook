@@ -24,8 +24,8 @@ public class Grade {
     private Student student;
 
     @OneToOne
-    @JoinColumn(name = "subjectID")
-    private Subject subject;
+    @JoinColumn(name = "lessonID")
+    private Lesson lesson;
 
     @NotNull
     private String date;
@@ -53,14 +53,6 @@ public class Grade {
         this.student = student;
     }
 
-    public Subject getSubject() {
-        return subject;
-    }
-
-    public void setSubject(Subject subject) {
-        this.subject = subject;
-    }
-
     public String getDate() {
         return date;
     }
@@ -83,5 +75,13 @@ public class Grade {
 
     public void setMark(int mark) {
         this.mark = mark;
+    }
+
+    public Lesson getLesson() {
+        return lesson;
+    }
+
+    public void setLesson(Lesson lesson) {
+        this.lesson = lesson;
     }
 }

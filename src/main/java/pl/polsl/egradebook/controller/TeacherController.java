@@ -4,6 +4,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.polsl.egradebook.model.entities.Case;
+import pl.polsl.egradebook.model.entities.Grade;
+import pl.polsl.egradebook.model.entities.Lesson;
 import pl.polsl.egradebook.model.entities.Message;
 import pl.polsl.egradebook.model.entities.Presence;
 import pl.polsl.egradebook.model.entities.Student;
@@ -29,6 +32,7 @@ import pl.polsl.egradebook.model.repositories.UserRepository;
 import pl.polsl.egradebook.model.util.StringValidator;
 import pl.polsl.egradebook.model.util.UrlValidator;
 
+import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,7 +42,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/teacher")
 public class TeacherController {
-
 
     private final TeacherRepository teacherRepository;
 
@@ -72,13 +75,11 @@ public class TeacherController {
 
     @GetMapping()
     @PreAuthorize("hasAuthority('/teacher')")
-    public String viewGradesAndAttendance(Authentication authentication, Model model) {
-        User loggedTeacher = this.getTeacherByUserName(authentication.getName()).getUser();
-        Iterable<Student> classStudents = studentRepository.findAll();
+    public String getTeacherView(Authentication authentication, Model model) {
+        Teacher loggedTeacher = getTeacherByUserName(authentication.getName());
+        List<Lesson> lessons = lessonRepository.findAllByTeacher_TeacherID(loggedTeacher.getTeacherID());
         model.addAttribute("teacher", loggedTeacher);
-        model.addAttribute("grades", gradeRepository.findAllByOrderByStudent_User_SurnameAsc());
-        model.addAttribute("attendance", presenceRepository.findAllByLesson_Teacher_User_UserID_OrderByDateDesc(loggedTeacher.getUserID()));
-        model.addAttribute("students", studentRepository.findAll());
+        model.addAttribute("lessons", lessons);
         return "teacher-view";
     }
 
@@ -111,6 +112,7 @@ public class TeacherController {
         model.addAttribute("todayDate", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         model.addAttribute("lessons", lessonRepository.findAllByTeacher_TeacherID(teacherID));
         return "teacher-attendance-management";
+
     }
 
     //shows all students in class for easy setting of attendance in selected lesson
@@ -124,7 +126,6 @@ public class TeacherController {
         int teacherID = loggedTeacher.getTeacherID();
         model.addAttribute("todayDate", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         model.addAttribute("lessons", lessonRepository.findAllByTeacher_TeacherID(teacherID));
-
 
         if (!StringValidator.validateDate(selectedDate))
             model.addAttribute("selectedDate", false);
@@ -214,6 +215,91 @@ public class TeacherController {
         newMessage.setSender(userRepository.findUserByUserName(authentication.getName()));
         messageRepository.save(newMessage);
         return "redirect:/teacher/cases/" + caseID + "/";
+    }
+
+    /**
+     * Returns the main page of grades management.
+     *
+     * @param grade          not sure why thymeleaf needs this
+     * @param authentication to get username
+     * @param model
+     * @return grade management site
+     */
+    @GetMapping("/grades")
+    @PreAuthorize("hasAuthority('/teacher/grades')")
+    public String getGradesViewGet(Grade grade, Authentication authentication, Model model) {
+        Teacher loggedTeacher = this.getTeacherByUserName(authentication.getName());
+        int teacherID = loggedTeacher.getTeacherID();
+        model.addAttribute("todayDate", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        model.addAttribute("lessons", lessonRepository.findAllByTeacher_TeacherID(teacherID));
+        return "teacher-grades-management";
+    }
+
+    /**
+     * Invoked when the teacher selected a lesson to add a new grade from dropdown list.
+     *
+     * @param grade            to access it from html file
+     * @param authentication   to get username
+     * @param model
+     * @param selectedLessonID
+     * @return
+     */
+    @PostMapping("/grades")
+    @PreAuthorize("hasAuthority('/teacher/grades')")
+    public String getGradesViewPost(Grade grade, Authentication authentication, Model model, @RequestParam("selectedLesson") int selectedLessonID) {
+        Teacher loggedTeacher = this.getTeacherByUserName(authentication.getName());
+        int teacherID = loggedTeacher.getTeacherID();
+        model.addAttribute("todayDate", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        model.addAttribute("lessons", lessonRepository.findAllByTeacher_TeacherID(teacherID));
+        StudentsClass selectedClass = lessonRepository.findByLessonID(selectedLessonID).getStudentsClass();
+        List<Student> students = studentRepository.findAllByStudentsClass_ClassID(selectedClass.getClassID());
+        if (students == null || students.size() == 0)
+            model.addAttribute("studentsFound", false);
+        else {
+            model.addAttribute("students", students);
+            model.addAttribute("todayDate", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+            model.addAttribute("selectedLesson", selectedLessonID);
+        }
+        return "teacher-grades-management";
+    }
+
+    /**
+     * Invoked when a "new grade form" is submitted.
+     *
+     * @param grade            a new grade
+     * @param bindingResult    binding fails when mark is >6 or <1
+     * @param selectedLessonID to populate students dropdown list
+     * @param model
+     * @param authentication
+     * @return
+     */
+    @PostMapping("/grades/submit")
+    @PreAuthorize("hasAuthority('/teacher/grades/submit')")
+    public String submitNewGrade(@ModelAttribute("grade") @Valid Grade grade, BindingResult bindingResult,
+                                 @RequestParam("lesson") int selectedLessonID,
+                                 Model model, Authentication authentication) {
+        Teacher teacher = getTeacherByUserName(authentication.getName());
+        if (bindingResult.hasErrors()) {
+            bindingResult.getAllErrors();
+            for (var err : bindingResult.getAllErrors()) {
+                System.err.println(err);
+            }
+            model.addAttribute("validationFailed", true);
+        } else {
+            String date = grade.getDate();
+            if (!StringValidator.validateDate(date)) {
+                model.addAttribute("validationFailed", true);
+            } else {
+                model.addAttribute("submitSuccessful", true);
+                gradeRepository.save(grade);
+            }
+        }
+        StudentsClass selectedClass = lessonRepository.findByLessonID(selectedLessonID).getStudentsClass();
+        List<Student> students = studentRepository.findAllByStudentsClass_ClassID(selectedClass.getClassID());
+        model.addAttribute("students", students);
+        model.addAttribute("todayDate", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        model.addAttribute("lessons", lessonRepository.findAllByTeacher_TeacherID(teacher.getTeacherID()));
+        return "teacher-grades-management";
     }
 
     private Teacher getTeacherByUserName(String userName) {

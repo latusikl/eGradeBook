@@ -66,7 +66,7 @@ public class ParentController {
     @PreAuthorize("hasAuthority('/parent')")
     public String selectChild(Authentication authentication, Model model) {
 
-        Parent loggedParent = this.getLoggedParent(authentication.getName());
+        Parent loggedParent = this.getParentByUserName(authentication.getName());
         List<Student> children = studentRepository.findAllByParent_ParentID(loggedParent.getParentID());
         model.addAttribute("parent", loggedParent);
         if (children != null && children.size() > 1) {
@@ -82,7 +82,7 @@ public class ParentController {
     @PostMapping()
     @PreAuthorize("hasAuthority('/parent')")
     public String getParentView(@RequestParam int childID, Authentication authentication, Model model) {
-        Parent loggedParent = getLoggedParent(authentication.getName());
+        Parent loggedParent = getParentByUserName(authentication.getName());
         Student child = studentRepository.findById(childID);
         parentViewAttributesWhenOnlyOneChild(model, loggedParent, child);
         return "parent-view";
@@ -115,7 +115,7 @@ public class ParentController {
     @PreAuthorize("hasAuthority('/parent/cases/{caseID}')")
     public String selectedCase(@PathVariable("caseID") int caseID, Model model, Authentication authentication) {
 
-        Parent loggedParent = this.getLoggedParent(authentication.getName());
+        Parent loggedParent = this.getParentByUserName(authentication.getName());
         if (!UrlValidator.canAccessCase(caseID, loggedParent.getUser().getUserID(), caseRepository))
             return "access-denied";
         Case foundCase = caseRepository.findByCaseID(caseID);
@@ -130,7 +130,7 @@ public class ParentController {
     @GetMapping("/cases")
     @PreAuthorize("hasAuthority('/parent/cases')")
     public String getCaseManagementSite(Authentication authentication, Model model) {
-        User loggedParent = this.getLoggedParent(authentication.getName()).getUser();
+        User loggedParent = this.getParentByUserName(authentication.getName()).getUser();
         model.addAttribute("cases", caseRepository.findByReceiver_UserIDOrSender_UserID(loggedParent.getUserID(), loggedParent.getUserID()));
         model.addAttribute("users", userRepository.findAll());
         model.addAttribute("newCase", new Case());
@@ -143,7 +143,7 @@ public class ParentController {
     @PreAuthorize("hasAuthority('/parent/cases/add')")
     public String addCase(@ModelAttribute("newCase") Case newCase, @RequestParam("content") String msgContent, Model model, Authentication authentication) {
 
-        User loggedParent = this.getLoggedParent(authentication.getName()).getUser();
+        User loggedParent = this.getParentByUserName(authentication.getName()).getUser();
         newCase.setSender(loggedParent);
 
         caseRepository.save(newCase);
@@ -174,7 +174,7 @@ public class ParentController {
         model.addAttribute("homeUrl", "/parent/");
     }
 
-    private Parent getLoggedParent(String userName) {
+    private Parent getParentByUserName(String userName) {
         return parentRepository.findByUser_UserName(userName);
     }
 }

@@ -39,6 +39,8 @@ Proper file format example:
         <access>/teacher</access>
         <access>/teacher/attendance</access>
         <access>/teacher/attendance/submit</access>
+        <access>/teacher/grades</access>
+        <access>/teacher/grades/submit</access>
         <access>/teacher/cases/{caseID}</access>
         <access>/teacher/cases</access>
         <access>/teacher/cases/add</access>

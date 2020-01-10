@@ -14,12 +14,17 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 
 /**
- Stores properties for each Role.
- Properties are read from xml file.
- Example format for role is shown in comment at the beginning of the file.
+ * Stores properties for each Role.
+ * Properties are read from xml file.
+ * Example format for role is shown in comment at the beginning of the file.
  */
 @Component
 public class RoleProperties {

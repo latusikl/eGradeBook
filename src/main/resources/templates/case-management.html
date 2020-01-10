@@ -16,8 +16,8 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-            <a class="nav-item nav-link" href="/student/">Home </a>
-            <a class="nav-item nav-link active" href="/student/cases">Cases <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link active" th:href="${homeUrl}">Home </a>
+            <a class="nav-item nav-link" th:href="${homeUrl+'cases/'}">Cases <span class="sr-only">(current)</span></a>
         </div>
     </div>
 </nav>
@@ -25,13 +25,14 @@
     <div th:switch="${cases}">
         <h2 th:case="null">No cases yet!</h2>
         <div th:case="*">
-            <h5>Cases sent to you:</h5>
+            <h5>Your cases:</h5>
             <table class="table table-striped">
                 <thead class="thead-dark">
                 <tr>
                     <th scope="col">ID</th>
                     <th scope="col">Sender</th>
-                    <th scope="col">topic</th>
+                    <th scope="col">Receiver</th>
+                    <th scope="col">Topic</th>
                     <th scope="col">View the content</th>
                 </tr>
                 </thead>
@@ -39,15 +40,16 @@
                 <tr th:each="case : ${cases}">
                     <td th:text="${case.caseID}"></td>
                     <td th:text="${case.sender.name + ' ' + case.sender.surname}" />
+                    <td th:text="${case.receiver.name + ' ' + case.receiver.surname}"/>
                     <td th:text="${case.topic}" />
-                    <td><a th:href="@{/student/cases/{caseID}(caseID=${case.caseID})}">View</a></td>
+                    <td><a th:href="${homeUrl+'cases/'+case.caseID}">View</a></td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </div>
 
-    <form method="post" th:action="@{/student/cases/add}" th:object="${newCase}">
+    <form method="post" th:action="${homeUrl+'cases/add'}" th:object="${newCase}">
         <div class="form-group">
             <label for="receiver">Receiver</label>
             <select th:field="*{receiver}" class="form-control" id="receiver">
@@ -59,7 +61,7 @@
             <label for="topic">Topic</label>
             <input type="text" class="form-control" th:field="*{topic}" id="topic" placeholder="Topic"/>
             <label for="content">Content</label>
-            <textarea class="form-control" th:field="*{content}" id="content" rows="3" placeholder="Topic"></textarea>
+            <input type="text" class="form-control" id="content" name="content" placeholder="Content"></input>
             <button type="submit" class="btn btn-secondary">Add new case</button>
         </div>
     </form>

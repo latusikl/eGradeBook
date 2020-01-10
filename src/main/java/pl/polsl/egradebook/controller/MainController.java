@@ -25,8 +25,8 @@ public class MainController {
     public String authredir(Authentication authentication) {
         //get collection of all authorities, which contains allowed urls
         //admin
-        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("/user/show/all")))
-            return "redirect:/user/show/all";
+        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("/admin/user/show/all")))
+            return "redirect:/admin/user/show/all";
             //teacher
         else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("/teacher")))
             return "redirect:/teacher";

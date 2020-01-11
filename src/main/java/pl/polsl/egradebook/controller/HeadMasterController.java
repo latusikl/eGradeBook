@@ -52,7 +52,7 @@ public class HeadMasterController {
     @GetMapping()
     @PreAuthorize("hasAuthority('/headmaster')")
     public String getFirstView(Authentication authentication, Model model) {
-        User logged = userRepository.findUserByUserName("Hellothere66");
+        User logged = userRepository.findUserByUserName(authentication.getName());
         model.addAttribute("headmaster", logged);
         return "headmaster-view";
     }

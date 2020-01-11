@@ -8,6 +8,8 @@ public interface PresenceRepository extends CrudRepository<Presence,Integer> {
     List<Presence> findByStudent_studentID(int studentID);
     List<Presence> findByStudent_studentIDAndPresent(int studentID, boolean present);
     List<Presence> findAllByDateAndLesson_LessonID(String date, int lessonID);
-    List<Presence> findAllByLesson_Teacher_User_UserID_OrderByDateDesc(int teacherID);
+
+    List<Presence> findAllByLesson_Teacher_TeacherID_OrderByDateDesc(int teacherID);
+
     Presence findByPresenceID(int presenceID);
 }

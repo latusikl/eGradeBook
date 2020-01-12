@@ -50,7 +50,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="grade : ${grades}">
-                    <td th:text="${grade.subject.name}"></td>
+                    <td th:text="${grade.lesson.subject.name}"></td>
                     <td th:text="${grade.date}"></td>
                     <td th:text="${grade.description}"></td>
                     <td th:text="${grade.mark}"></td>

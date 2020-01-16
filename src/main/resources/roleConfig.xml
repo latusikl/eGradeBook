@@ -53,6 +53,11 @@ Proper file format example:
         <access>/headmaster/grades</access>
         <access>/headmaster/absence</access>
         <access>/headmaster/overview</access>
+        <access>/headmaster/overview</access>
+        <access>/headmaster/cases/{caseID}</access>
+        <access>/headmaster/cases</access>
+        <access>/headmaster/cases/add</access>
+        <access>/headmaster/cases/reply</access>
     </role>
     <role name="admin">
         <access>/user/add</access>

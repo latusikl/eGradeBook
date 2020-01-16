@@ -33,7 +33,9 @@ Proper file format example:
         <access>/parent/cases</access>
         <access>/parent/cases/add</access>
         <access>/parent/cases/reply</access>
+        <access>/parent/attendance</access>
         <access>/parent/attendance/{presenceID}</access>
+        <access>/parent/grades</access>
     </role>
     <role name="teacher">
         <access>/teacher</access>

@@ -16,45 +16,43 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-            <a class="nav-item nav-link" href="/parent/">Home <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link active" href="/parent/">Home <span class="sr-only">(current)</span></a>
             <a class="nav-item nav-link" href="/parent/cases">Cases </a>
-            <a class="nav-item nav-link active" href="/parent/attendance">Attendance </a>
-            <a class="nav-item nav-link" href="/parent/grades">Grades </a>
+            <a class="nav-item nav-link" href="/parent/attendance">Attendance </a>
+            <a class="nav-item nav-link active" href="/parent/grades">Grades </a>
         </div>
     </div>
 </nav>
 <div class="container">
-    <div th:switch="${absences}">
+    <div th:if="${child != null}">
         <h5>
             <p>
-                Absences of your child
+                Grades of your child
                 <span th:text="${child.user.name}"/>:
             </p>
         </h5>
-        <h2 th:case="null">No absences.</h2>
-        <div th:case="*">
-            <table class="table table-striped">
-                <thead class="thead-dark">
-                <tr>
-                    <th scope="col">Date</th>
-                    <th scope="col">Day</th>
-                    <th scope="col">Number of lesson</th>
-                    <th scope="col">Subject name</th>
-                    <th scope="col">Absence</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="absence : ${absences}">
-                    <td th:text="${absence.date}"></td>
-                    <td th:text="${absence.lesson.day.day}"></td>
-                    <td th:text="${absence.lesson.number}"></td>
-                    <td th:text="${absence.lesson.subject.name}"></td>
-                    <td><a th:href="@{/parent/attendance/{presenceID}(presenceID=${absence.presenceID})}">
-                        Excuse</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+        <div th:switch="${grades}">
+            <h2 th:case="null">No grades yet.</h2>
+            <div th:case="*">
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Subject name</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Mark</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="grade : ${grades}">
+                        <td th:text="${grade.lesson.subject.name}"></td>
+                        <td th:text="${grade.date}"></td>
+                        <td th:text="${grade.description}"></td>
+                        <td th:text="${grade.mark}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

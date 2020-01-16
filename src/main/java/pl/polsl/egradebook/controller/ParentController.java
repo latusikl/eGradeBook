@@ -17,6 +17,7 @@ import pl.polsl.egradebook.model.entities.Parent;
 import pl.polsl.egradebook.model.entities.Presence;
 import pl.polsl.egradebook.model.entities.Student;
 import pl.polsl.egradebook.model.entities.User;
+import pl.polsl.egradebook.model.exceptions.InputException;
 import pl.polsl.egradebook.model.repositories.CaseRepository;
 import pl.polsl.egradebook.model.repositories.GradeRepository;
 import pl.polsl.egradebook.model.repositories.LessonRepository;
@@ -49,6 +50,8 @@ public class ParentController {
 
     private final UserRepository userRepository;
 
+    private Student child;
+
     public ParentController(StudentRepository studentRepository, ParentRepository parentRepository,
                             LessonRepository lessonRepository, GradeRepository gradeRepository,
                             PresenceRepository presenceRepository, CaseRepository caseRepository, MessageRepository messageRepository, UserRepository userRepository) {
@@ -74,7 +77,7 @@ public class ParentController {
         } else {
             Student child = children.get(0);
             model.addAttribute("child", children.get(0));
-            parentViewAttributesWhenOnlyOneChild(model, loggedParent, child);
+            getChildInformations(model, loggedParent, child);
         }
         return "parent-view";
     }
@@ -84,11 +87,11 @@ public class ParentController {
     public String getParentView(@RequestParam int childID, Authentication authentication, Model model) {
         Parent loggedParent = getParentByUserName(authentication.getName());
         Student child = studentRepository.findById(childID);
-        parentViewAttributesWhenOnlyOneChild(model, loggedParent, child);
+        getChildInformations(model, loggedParent, child);
         return "parent-view";
     }
 
-    private void parentViewAttributesWhenOnlyOneChild(Model model, Parent loggedParent, Student child) {
+    private void getChildInformations(Model model, Parent loggedParent, Student child) {
         int loggedStudentClassID = child.getStudentsClass().getClassID();
         List<Lesson> lessons = lessonRepository.findAllByStudentsClass_ClassID(loggedStudentClassID);
         model.addAttribute("child", child);
@@ -98,16 +101,43 @@ public class ParentController {
         model.addAttribute("absences", presenceRepository.
                 findByStudent_studentIDAndPresent(child.getStudentID(), false));
         model.addAttribute("lessons", lessons);
+        this.child = child;
     }
 
     @GetMapping(path = "/attendance/{presenceID}")
     @PreAuthorize("hasAuthority('/parent/attendance/{presenceID}')")
     public String excuseAbsence(@PathVariable("presenceID") int presenceID) {
-        Presence foundPresence = presenceRepository.findById(presenceID).orElseThrow(() ->
-                new IllegalArgumentException("Invalid id:" + presenceID));
-        foundPresence.setPresent(true);
-        presenceRepository.save(foundPresence);
-        return "redirect:/parent";
+        try {
+            Presence foundPresence = presenceRepository.findById(presenceID).orElseThrow(() ->
+                    new InputException("Invalid id:" + presenceID));
+            foundPresence.setPresent(true);
+            presenceRepository.save(foundPresence);
+        } catch (InputException e) {
+            System.err.println(e);
+        }
+        return "redirect:/parent/attendance";
+    }
+
+    @GetMapping(path = "/attendance")
+    @PreAuthorize("hasAuthority('/parent/attendance')")
+    public String getAttendanceView(Authentication authentication, Model model) {
+        Parent loggedParent = getParentByUserName(authentication.getName());
+        if (this.child == null) {
+            return "redirect:/parent";
+        }
+        getChildInformations(model, loggedParent, this.child);
+        return "parent-attendance-view";
+    }
+
+    @GetMapping(path = "/grades")
+    @PreAuthorize("hasAuthority('/parent/grades')")
+    public String getGradesView(Authentication authentication, Model model) {
+        Parent loggedParent = getParentByUserName(authentication.getName());
+        if (this.child == null) {
+            return "redirect:/parent";
+        }
+        getChildInformations(model, loggedParent, this.child);
+        return "parent-grades-view";
     }
 
     //case details view

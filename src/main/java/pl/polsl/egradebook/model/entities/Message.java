@@ -16,7 +16,7 @@ public class Message {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    int messageID;
+    private int messageID;
 
     @ManyToOne
     @JoinColumn(name = "caseid", referencedColumnName = "caseid")
@@ -28,6 +28,10 @@ public class Message {
 
     @NotNull
     private String content;
+
+    public int getMessageID() {
+        return messageID;
+    }
 
     public void setMessageID(int messageID) {
         this.messageID = messageID;

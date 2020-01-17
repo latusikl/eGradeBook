@@ -21,6 +21,7 @@
             <a class="nav-item nav-link" href="/headmaster/grades/">Generate grades raport</a>
             <a class="nav-item nav-link" href="/headmaster/absence/">Generate absence raport</a>
             <a class="nav-item nav-link active" href="/headmaster/overview/">Overview student</a>
+            <a class="nav-item nav-link" href="/headmaster/timetable/">Timetables</a>
         </div>
     </div>
 </nav>
@@ -44,7 +45,7 @@
             <div th:switch="${grades}">
                 <h2 th:case="null">No grades yet.</h2>
                 <div th:case="*">
-                    <div>Choosen student: <span th:text="${student.user.name + ' ' + student.user.surname}"></span></div>
+                    <div>Chosen student: <span th:text="${student.user.name + ' ' + student.user.surname}"></span></div>
                     <div></div>
                     <table class="table table-striped">
                         <thead class="thead-dark">
@@ -56,7 +57,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="grade : ${grades}">
+                        <tr th:each="grade : ${grades}">lik
                             <td th:text="${grade.lesson.subject.name}"></td>
                             <td th:text="${grade.date}"></td>
                             <td th:text="${grade.description}"></td>

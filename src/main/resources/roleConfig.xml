@@ -60,6 +60,7 @@ Proper file format example:
         <access>/headmaster/cases</access>
         <access>/headmaster/cases/add</access>
         <access>/headmaster/cases/reply</access>
+        <access>/headmaster/timetable</access>
     </role>
     <role name="admin">
         <access>/user/add</access>

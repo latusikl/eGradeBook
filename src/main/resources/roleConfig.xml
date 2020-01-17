@@ -26,6 +26,7 @@ Proper file format example:
         <access>/student/cases/reply</access>
         <access>/student/grades</access>
         <access>/student/attendance</access>
+        <access>/student/statistics</access>
     </role>
     <role name="parent">
         <access>/parent</access>
@@ -36,6 +37,7 @@ Proper file format example:
         <access>/parent/attendance</access>
         <access>/parent/attendance/{presenceID}</access>
         <access>/parent/grades</access>
+        <access>/parent/statistics</access>
     </role>
     <role name="teacher">
         <access>/teacher</access>

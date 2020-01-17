@@ -188,7 +188,7 @@ public class HeadMasterController {
         return "redirect:/headmaster/cases/" + newCase.getCaseID() + "/";
     }
 
-    //cases view for the teacher
+    //cases view for the headmaster
     @GetMapping(path = "/cases/{caseID}")
     @PreAuthorize("hasAuthority('/headmaster/cases/{caseID}')")
     public String selectedCase(@PathVariable("caseID") int caseID, Model model, Authentication authentication) {

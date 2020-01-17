@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import pl.polsl.egradebook.model.entities.Case;
+import pl.polsl.egradebook.model.entities.Grade;
 import pl.polsl.egradebook.model.entities.Lesson;
 import pl.polsl.egradebook.model.entities.Message;
 import pl.polsl.egradebook.model.entities.Parent;
@@ -28,6 +30,7 @@ import pl.polsl.egradebook.model.repositories.StudentRepository;
 import pl.polsl.egradebook.model.repositories.UserRepository;
 import pl.polsl.egradebook.model.util.UrlValidator;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 @Controller
@@ -198,6 +201,31 @@ public class ParentController {
         newMessage.setSender(userRepository.findUserByUserName(authentication.getName()));
         messageRepository.save(newMessage);
         return "redirect:/parent/cases/" + caseID + "/";
+    }
+
+    @GetMapping(path = "/statistics")
+    @PreAuthorize("hasAuthority('/parent/statistics')")
+    @ResponseBody
+    public String getStatistics(Authentication authentication) {
+        if (this.child == null) {
+            return "Child not selected";
+        }
+        String returnString = "Grades average: ";
+        double average = 0;
+        List<Grade> gradeList = gradeRepository.findByStudent_studentID(this.child.getStudentID());
+        for (var grade : gradeList) {
+            average += grade.getMark();
+        }
+        if (average > 0) {
+            average = average / gradeList.size();
+        }
+        DecimalFormat df = new DecimalFormat("#.##");
+        returnString += df.format(average);
+        returnString += "\n";
+        returnString += "Number of absences: ";
+        int absenceNumber = presenceRepository.findByStudent_studentIDAndPresent(this.child.getStudentID(), false).size();
+        returnString += Integer.toString(absenceNumber);
+        return returnString;
     }
 
     private void addHomeUrl(Model model) {

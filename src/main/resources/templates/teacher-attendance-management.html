@@ -56,10 +56,10 @@
                                           th:object="${studentsAttendance}">
                                         <table class="table table-striped">
                                             <tr>
-                                                <th scope="col">Imie</th>
-                                                <th scope="col">Nazwisko</th>
-                                                <th scope="col">Klasa</th>
-                                                <th scope="col">Obecny</th>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Surname</th>
+                                                <th scope="col">Class</th>
+                                                <th scope="col">Present</th>
                                             </tr>
                                             <tr th:each="pres, presStat : ${studentsAttendance.list}">
                                                 <td th:text="${pres.student.user.name}"/>

@@ -10,13 +10,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import pl.polsl.egradebook.model.entities.Case;
+import pl.polsl.egradebook.model.entities.Grade;
 import pl.polsl.egradebook.model.entities.Lesson;
 import pl.polsl.egradebook.model.entities.Message;
 import pl.polsl.egradebook.model.entities.Parent;
 import pl.polsl.egradebook.model.entities.Presence;
 import pl.polsl.egradebook.model.entities.Student;
 import pl.polsl.egradebook.model.entities.User;
+import pl.polsl.egradebook.model.exceptions.InputException;
 import pl.polsl.egradebook.model.repositories.CaseRepository;
 import pl.polsl.egradebook.model.repositories.GradeRepository;
 import pl.polsl.egradebook.model.repositories.LessonRepository;
@@ -27,6 +30,7 @@ import pl.polsl.egradebook.model.repositories.StudentRepository;
 import pl.polsl.egradebook.model.repositories.UserRepository;
 import pl.polsl.egradebook.model.util.UrlValidator;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 @Controller
@@ -48,6 +52,8 @@ public class ParentController {
     private final MessageRepository messageRepository;
 
     private final UserRepository userRepository;
+
+    private Student child;
 
     public ParentController(StudentRepository studentRepository, ParentRepository parentRepository,
                             LessonRepository lessonRepository, GradeRepository gradeRepository,
@@ -74,7 +80,7 @@ public class ParentController {
         } else {
             Student child = children.get(0);
             model.addAttribute("child", children.get(0));
-            parentViewAttributesWhenOnlyOneChild(model, loggedParent, child);
+            getChildInformations(model, loggedParent, child);
         }
         return "parent-view";
     }
@@ -84,11 +90,11 @@ public class ParentController {
     public String getParentView(@RequestParam int childID, Authentication authentication, Model model) {
         Parent loggedParent = getParentByUserName(authentication.getName());
         Student child = studentRepository.findById(childID);
-        parentViewAttributesWhenOnlyOneChild(model, loggedParent, child);
+        getChildInformations(model, loggedParent, child);
         return "parent-view";
     }
 
-    private void parentViewAttributesWhenOnlyOneChild(Model model, Parent loggedParent, Student child) {
+    private void getChildInformations(Model model, Parent loggedParent, Student child) {
         int loggedStudentClassID = child.getStudentsClass().getClassID();
         List<Lesson> lessons = lessonRepository.findAllByStudentsClass_ClassID(loggedStudentClassID);
         model.addAttribute("child", child);
@@ -98,16 +104,43 @@ public class ParentController {
         model.addAttribute("absences", presenceRepository.
                 findByStudent_studentIDAndPresent(child.getStudentID(), false));
         model.addAttribute("lessons", lessons);
+        this.child = child;
     }
 
     @GetMapping(path = "/attendance/{presenceID}")
     @PreAuthorize("hasAuthority('/parent/attendance/{presenceID}')")
     public String excuseAbsence(@PathVariable("presenceID") int presenceID) {
-        Presence foundPresence = presenceRepository.findById(presenceID).orElseThrow(() ->
-                new IllegalArgumentException("Invalid id:" + presenceID));
-        foundPresence.setPresent(true);
-        presenceRepository.save(foundPresence);
-        return "redirect:/parent";
+        try {
+            Presence foundPresence = presenceRepository.findById(presenceID).orElseThrow(() ->
+                    new InputException("Invalid id:" + presenceID));
+            foundPresence.setPresent(true);
+            presenceRepository.save(foundPresence);
+        } catch (InputException e) {
+            System.err.println(e);
+        }
+        return "redirect:/parent/attendance";
+    }
+
+    @GetMapping(path = "/attendance")
+    @PreAuthorize("hasAuthority('/parent/attendance')")
+    public String getAttendanceView(Authentication authentication, Model model) {
+        Parent loggedParent = getParentByUserName(authentication.getName());
+        if (this.child == null) {
+            return "redirect:/parent";
+        }
+        getChildInformations(model, loggedParent, this.child);
+        return "parent-attendance-view";
+    }
+
+    @GetMapping(path = "/grades")
+    @PreAuthorize("hasAuthority('/parent/grades')")
+    public String getGradesView(Authentication authentication, Model model) {
+        Parent loggedParent = getParentByUserName(authentication.getName());
+        if (this.child == null) {
+            return "redirect:/parent";
+        }
+        getChildInformations(model, loggedParent, this.child);
+        return "parent-grades-view";
     }
 
     //case details view
@@ -168,6 +201,31 @@ public class ParentController {
         newMessage.setSender(userRepository.findUserByUserName(authentication.getName()));
         messageRepository.save(newMessage);
         return "redirect:/parent/cases/" + caseID + "/";
+    }
+
+    @GetMapping(path = "/statistics")
+    @PreAuthorize("hasAuthority('/parent/statistics')")
+    @ResponseBody
+    public String getStatistics(Authentication authentication) {
+        if (this.child == null) {
+            return "Child not selected";
+        }
+        String returnString = "Grades average: ";
+        double average = 0;
+        List<Grade> gradeList = gradeRepository.findByStudent_studentID(this.child.getStudentID());
+        for (var grade : gradeList) {
+            average += grade.getMark();
+        }
+        if (average > 0) {
+            average = average / gradeList.size();
+        }
+        DecimalFormat df = new DecimalFormat("#.##");
+        returnString += df.format(average);
+        returnString += "\n";
+        returnString += "Number of absences: ";
+        int absenceNumber = presenceRepository.findByStudent_studentIDAndPresent(this.child.getStudentID(), false).size();
+        returnString += Integer.toString(absenceNumber);
+        return returnString;
     }
 
     private void addHomeUrl(Model model) {

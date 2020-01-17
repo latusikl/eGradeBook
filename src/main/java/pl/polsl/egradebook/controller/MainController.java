@@ -33,9 +33,12 @@ public class MainController {
             //student
         else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("/student")))
             return "redirect:/student";
-            //else
+            //parent
         else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("/parent")))
             return "redirect:/parent";
+            //headmaster
+        else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("/headmaster")))
+            return "redirect:/headmaster";
         else
             return "redirect:/";
     }

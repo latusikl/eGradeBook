@@ -34,7 +34,6 @@ import pl.polsl.egradebook.model.util.StringValidator;
 import pl.polsl.egradebook.model.util.UrlValidator;
 
 import javax.validation.Valid;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -78,6 +77,13 @@ public class TeacherController {
         this.messageRepository = messageRepository;
     }
 
+    /**
+     * Method that returns the main view for teacher role.
+     *
+     * @param authentication to get teacher username
+     * @param model          used to access objects from Thymeleaf
+     * @return main view
+     */
     @GetMapping()
     @PreAuthorize("hasAuthority('/teacher')")
     public String getTeacherView(Authentication authentication, Model model) {
@@ -88,8 +94,15 @@ public class TeacherController {
         return "teacher-view";
     }
 
-    //submits changed attendances for selected class
-    //returns teacher-attendance-management.html with model attribute submitSuccessful set to true to show the message on page
+    /**
+     * Submits changed attendances for selected class.
+     * Returns teacher-attendance-management.html with model attribute submitSuccessful set to true to show the message on page
+     *
+     * @param listWrapper    used to wrap the presence list and send it via post
+     * @param model          used to access objects from Thymeleaf
+     * @param authentication to get teacher username
+     * @return attendance management view
+     */
     @PostMapping("/attendance/submit")
     @PreAuthorize("hasAuthority('/teacher/attendance/submit')")
     public String submitAttendance(ListWrapper listWrapper, Model model, Authentication authentication) {
@@ -105,9 +118,16 @@ public class TeacherController {
         return "teacher-attendance-management";
     }
 
-    //shows dropdown box with classes and enables class selection for changing attendances
-    //sends selected lesson with post to the same page, along with the selected date from date picker
-    //returns teacher-attendance-management.html with model attribute newInstance set to true to suppress all messages about empty date and list of students
+    /**
+     * Shows dropdown box with classes and enables class selection for changing attendances.
+     * Sends selected lesson with post to the same page, along with the selected date from date picker.
+     * Returns teacher-attendance-management.html with model attribute newInstance set to true to suppress all messages
+     * about empty date and list of students.
+     *
+     * @param model          used to access objects from Thymeleaf
+     * @param authentication to get teacher username
+     * @return teacher-attendance-management.html
+     */
     @GetMapping("/attendance")
     @PreAuthorize("hasAuthority('/teacher/attendance')")
     public String checkAttendance(Authentication authentication, Model model) {
@@ -120,10 +140,18 @@ public class TeacherController {
 
     }
 
-    //shows all students in class for easy setting of attendance in selected lesson
-    //gets selected lesson with post from the dropdown list along with selected date
-    //sets model attributes selectedDate and studentsFound to false to warn about incorrect or nonsensical input
-    //submits the data if correct using the second form in teacher-attendance-management.html to /teacher/attendance/submit
+    /**
+     * Shows all students in class for easy setting of attendance in selected lesson. Gets selected lesson with post
+     * from the dropdown list along with selected date. Sets model attributes selectedDate and studentsFound to false to
+     * warn about incorrect or nonsensical input. Submits the data if correct using the second form in
+     * teacher-attendance-management.html to /teacher/attendance/submit
+     *
+     * @param model          used to access objects from Thymeleaf
+     * @param authentication to get teacher username
+     * @param selectedLesson
+     * @param selectedDate
+     * @return teacher-attendance-management.html
+     */
     @PostMapping("/attendance")
     @PreAuthorize("hasAuthority('/teacher/attendance')")
     public String checkAttendancePost(Authentication authentication, Model model, @RequestParam("selectedLesson") int selectedLesson, @RequestParam("selectedDate") String selectedDate) {
@@ -162,7 +190,13 @@ public class TeacherController {
         return "teacher-attendance-management";
     }
 
-    //case management
+    /**
+     * Returns case management view.
+     *
+     * @param model          used to access objects from Thymeleaf
+     * @param authentication to get teacher username
+     * @return case-management.html
+     */
     @GetMapping("/cases")
     @PreAuthorize("hasAuthority('/teacher/cases')")
     public String getCaseManagementSite(Authentication authentication, Model model) {
@@ -174,10 +208,19 @@ public class TeacherController {
         return "case-management";
     }
 
-    // add case
+    /**
+     * Adds new case.
+     *
+     * @param newCase
+     * @param msgContent     content of the case
+     * @param model          used to access objects from Thymeleaf
+     * @param authentication to get teacher username
+     * @return case overview
+     */
     @PostMapping("/cases/add")
     @PreAuthorize("hasAuthority('/teacher/cases/add')")
-    public String addCase(@ModelAttribute("newCase") Case newCase, @RequestParam("content") String msgContent, Model model, Authentication authentication) {
+    public String addCase(@ModelAttribute("newCase") Case newCase, @RequestParam("content") String msgContent, Model model,
+                          Authentication authentication) {
 
         User loggedTeacher = this.getTeacherByUserName(authentication.getName()).getUser();
 
@@ -194,7 +237,14 @@ public class TeacherController {
         return "redirect:/teacher/cases/" + newCase.getCaseID() + "/";
     }
 
-    //cases view for the teacher
+    /**
+     * Returns the case view for teacher role.
+     *
+     * @param caseID
+     * @param model          used to access objects from Thymeleaf
+     * @param authentication to get teacher username
+     * @return case view
+     */
     @GetMapping(path = "/cases/{caseID}")
     @PreAuthorize("hasAuthority('/teacher/cases/{caseID}')")
     public String selectedCase(@PathVariable("caseID") int caseID, Model model, Authentication authentication) {
@@ -210,7 +260,14 @@ public class TeacherController {
         return "case-content-view";
     }
 
-    //reply to case
+    /**
+     * Invoked when teacher replies to case.
+     *
+     * @param caseID
+     * @param content        message content
+     * @param authentication to get teacher username
+     * @return case view
+     */
     @PostMapping(path = "/cases/reply")
     @PreAuthorize("hasAuthority('/teacher/cases/reply')")
     public String replyToCase(@RequestParam("caseID") int caseID, @RequestParam("content") String content, Authentication authentication) {
@@ -247,7 +304,7 @@ public class TeacherController {
      * @param authentication   to get username
      * @param model
      * @param selectedLessonID
-     * @return
+     * @return grades management view
      */
     @PostMapping("/grades")
     @PreAuthorize("hasAuthority('/teacher/grades')")
@@ -307,6 +364,12 @@ public class TeacherController {
         return "teacher-grades-management";
     }
 
+    /**
+     * Returns the main page of student overview.
+     *
+     * @param model
+     * @return teacher-student-overview-view.html
+     */
     @GetMapping(path = "/overview")
     @PreAuthorize("hasAuthority('/teacher/overview')")
     public String getStatisticsView(Model model) {
@@ -315,6 +378,13 @@ public class TeacherController {
         return "teacher-student-overview-view";
     }
 
+    /**
+     * Invoked when a student to overview is selected.
+     *
+     * @param selectedStudent
+     * @param model
+     * @return teacher-student-overview-view.html
+     */
     @PostMapping(path = "/overview")
     @PreAuthorize("hasAuthority('/teacher/overview')")
     public String getStatistics(@RequestParam Student selectedStudent, Model model) {
@@ -331,15 +401,29 @@ public class TeacherController {
         return "teacher-student-overview-view";
     }
 
+    /**
+     * Finds teacher by username.
+     *
+     * @param userName
+     * @return teacher
+     */
     private Teacher getTeacherByUserName(String userName) {
         return teacherRepository.findByUser_UserName(userName);
     }
 
+    /**
+     * Method used to add homeurl to model.
+     *
+     * @param model
+     */
     private void addHomeUrl(Model model) {
         model.addAttribute("homeUrl", "/teacher/");
     }
 
-    //list wrapper used to wrap the presence list and send it via post
+    /**
+     * List wrapper used to wrap the presence list and send it via post
+     */
+
     class ListWrapper {
         private List<Presence> list;
 

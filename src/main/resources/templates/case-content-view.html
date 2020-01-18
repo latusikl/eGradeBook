@@ -21,6 +21,29 @@
             <a class="nav-item nav-link" th:href="${homeUrl}">Home </a>
             <a class="nav-item nav-link active" th:href="${homeUrl+'cases/'}">Cases <span
                     class="sr-only">(current)</span></a>
+            <th:block th:switch="${homeUrl}">
+                <th:block th:case="'/teacher/'">
+                    <a class="nav-item nav-link" href="/teacher/attendance/">Attendance</a>
+                    <a class="nav-item nav-link " href="/teacher/grades/">Grades</a>
+                    <a class="nav-item nav-link" href="/teacher/overview/">Overview student</a>
+                </th:block>
+                <th:block th:case="'/student/'">
+                    <a class="nav-item nav-link" href="/student/grades">Grades </a>
+                    <a class="nav-item nav-link" href="/student/attendance">Attendance </a>
+                    <a class="nav-item nav-link" href="/student/statistics">Statistics </a>
+                </th:block>
+                <th:block th:case="'/parent/'">
+                    <a class="nav-item nav-link" href="/parent/attendance">Attendance </a>
+                    <a class="nav-item nav-link" href="/parent/grades">Grades </a>
+                    <a class="nav-item nav-link" href="/parent/statistics">Statistics </a>
+                </th:block>
+                <th:block th:case="'/headmaster/'">
+                    <a class="nav-item nav-link" href="/headmaster/grades/">Generate grades raport</a>
+                    <a class="nav-item nav-link" href="/headmaster/absence/">Generate absence raport</a>
+                    <a class="nav-item nav-link" href="/headmaster/overview/">Overview student</a>
+                    <a class="nav-item nav-link" href="/headmaster/timetable/">Timetables</a>
+                </th:block>
+            </th:block>
         </div>
     </div>
 </nav>

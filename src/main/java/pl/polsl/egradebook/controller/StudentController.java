@@ -35,8 +35,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/student")
 public class StudentController {
-	
-	private final StudentRepository studentRepository;
+
+    private final StudentRepository studentRepository;
 
     private final GradeRepository gradeRepository;
 
@@ -60,45 +60,72 @@ public class StudentController {
         this.messageRepository = messageRepository;
     }
 
+    /**
+     * Method that returns the main view for student role.
+     *
+     * @param authentication to get student username
+     * @param model          used to access objects from Thymeleaf
+     * @return main view
+     */
     @GetMapping()
-	@PreAuthorize("hasAuthority('/student')")
-	public String getStudentView(Authentication authentication, Model model) {
-		Student loggedStudent = this.getStudentByUserName(authentication.getName());
-		int loggedStudentClassID = loggedStudent.getStudentsClass().getClassID();
-		List<Lesson> lessons = lessonRepository.findAllByStudentsClass_ClassID(loggedStudentClassID);
-		model.addAttribute("student", loggedStudent);
-		model.addAttribute("grades", gradeRepository.
-				findByStudent_studentID(loggedStudent.getStudentID()));
-		model.addAttribute("attendance", presenceRepository.
-				findByStudent_studentID(loggedStudent.getStudentID()));
-		model.addAttribute("lessons", lessons);
-		return "student-view";
-	}
+    @PreAuthorize("hasAuthority('/student')")
+    public String getStudentView(Authentication authentication, Model model) {
+        Student loggedStudent = this.getStudentByUserName(authentication.getName());
+        int loggedStudentClassID = loggedStudent.getStudentsClass().getClassID();
+        List<Lesson> lessons = lessonRepository.findAllByStudentsClass_ClassID(loggedStudentClassID);
+        model.addAttribute("student", loggedStudent);
+        model.addAttribute("grades", gradeRepository.
+                findByStudent_studentID(loggedStudent.getStudentID()));
+        model.addAttribute("attendance", presenceRepository.
+                findByStudent_studentID(loggedStudent.getStudentID()));
+        model.addAttribute("lessons", lessons);
+        return "student-view";
+    }
 
-	@GetMapping(path = "/grades")
-	@PreAuthorize("hasAuthority('/student/grades')")
-	public String getStudentGradesView(Authentication authentication, Model model) {
-		String userName = authentication.getName();
-		Student loggedStudent = studentRepository.findByUser_UserName(userName);
-		model.addAttribute("student", loggedStudent);
-		model.addAttribute("grades", gradeRepository.
-				findByStudent_studentID(loggedStudent.getStudentID()));
-		return "student-grades-view";
-	}
+    /**
+     * Method that returns the grades view for student role.
+     *
+     * @param authentication to get student username
+     * @param model          used to access objects from Thymeleaf
+     * @return grades view
+     */
+    @GetMapping(path = "/grades")
+    @PreAuthorize("hasAuthority('/student/grades')")
+    public String getStudentGradesView(Authentication authentication, Model model) {
+        String userName = authentication.getName();
+        Student loggedStudent = studentRepository.findByUser_UserName(userName);
+        model.addAttribute("student", loggedStudent);
+        model.addAttribute("grades", gradeRepository.
+                findByStudent_studentID(loggedStudent.getStudentID()));
+        return "student-grades-view";
+    }
 
-	@GetMapping(path = "/attendance")
-	@PreAuthorize("hasAuthority('/student/attendance')")
+    /**
+     * Method that returns the attendance view for student role.
+     *
+     * @param authentication to get student username
+     * @param model          used to access objects from Thymeleaf
+     * @return attendance view
+     */
+    @GetMapping(path = "/attendance")
+    @PreAuthorize("hasAuthority('/student/attendance')")
     public String getStudentAttendanceView(Authentication authentication, Model model) {
         String userName = authentication.getName();
         Student loggedStudent = studentRepository.findByUser_UserName(userName);
-        int loggedStudentClassID = loggedStudent.getStudentsClass().getClassID();
         model.addAttribute("student", loggedStudent);
         model.addAttribute("attendance", presenceRepository.
                 findByStudent_studentID(loggedStudent.getStudentID()));
         return "student-attendance-view";
     }
 
-    //case details view
+    /**
+     * Method that returns the case details view for student role.
+     *
+     * @param authentication to get student username
+     * @param model          used to access objects from Thymeleaf
+     * @param caseID
+     * @return case details view
+     */
     @GetMapping(path = "/cases/{caseID}")
     @PreAuthorize("hasAuthority('/student/cases/{caseID}')")
     public String selectedCase(@PathVariable("caseID") int caseID, Model model, Authentication authentication) {
@@ -114,7 +141,13 @@ public class StudentController {
         return "case-content-view";
     }
 
-    //case management
+    /**
+     * Method that returns the case management view for student role.
+     *
+     * @param authentication to get student username
+     * @param model          used to access objects from Thymeleaf
+     * @return case management view
+     */
     @GetMapping("/cases")
     @PreAuthorize("hasAuthority('/student/cases')")
     public String getCaseManagementSite(Authentication authentication, Model model) {
@@ -126,7 +159,15 @@ public class StudentController {
         return "case-management";
     }
 
-    // add case view
+    /**
+     * Adds new case.
+     *
+     * @param newCase
+     * @param msgContent     content of the case
+     * @param model          used to access objects from Thymeleaf
+     * @param authentication to get student username
+     * @return case overview
+     */
     @PostMapping("/cases/add")
     @PreAuthorize("hasAuthority('/student/cases/add')")
     public String addCase(@ModelAttribute("newCase") Case newCase, @RequestParam("content") String msgContent, Model model, Authentication authentication) {
@@ -146,7 +187,14 @@ public class StudentController {
         return "redirect:/student/cases/" + newCase.getCaseID() + "/";
     }
 
-    //reply to case
+    /**
+     * Invoked when student replies to case.
+     *
+     * @param caseID
+     * @param content        message content
+     * @param authentication to get student username
+     * @return case view
+     */
     @PostMapping(path = "/cases/reply")
     @PreAuthorize("hasAuthority('/student/cases/reply')")
     public String replyToCase(@RequestParam("caseID") int caseID, @RequestParam("content") String content, Authentication authentication) {
@@ -158,6 +206,12 @@ public class StudentController {
         return "redirect:/student/cases/" + caseID + "/";
     }
 
+    /**
+     * Method that returns statistics of logged student.
+     *
+     * @param authentication to get student username
+     * @return statistics (text not html file)
+     */
     @GetMapping(path = "/statistics")
     @PreAuthorize("hasAuthority('/student/statistics')")
     @ResponseBody
@@ -181,10 +235,21 @@ public class StudentController {
         return returnString;
     }
 
+    /**
+     * Finds student by username.
+     *
+     * @param userName
+     * @return student
+     */
     private Student getStudentByUserName(String userName) {
         return studentRepository.findByUser_UserName(userName);
     }
 
+    /**
+     * Method used to add homeurl to model.
+     *
+     * @param model
+     */
     private void addHomeUrl(Model model) {
         model.addAttribute("homeUrl", "/student/");
     }

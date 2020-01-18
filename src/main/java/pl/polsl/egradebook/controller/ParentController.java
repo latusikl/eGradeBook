@@ -53,6 +53,9 @@ public class ParentController {
 
     private final UserRepository userRepository;
 
+    /**
+     * Field used to store selected child.
+     */
     private Student child;
 
     public ParentController(StudentRepository studentRepository, ParentRepository parentRepository,
@@ -68,6 +71,13 @@ public class ParentController {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Method that returns the main view for parent role.
+     *
+     * @param authentication to get parent username
+     * @param model          used to access objects from Thymeleaf
+     * @return main view
+     */
     @GetMapping()
     @PreAuthorize("hasAuthority('/parent')")
     public String selectChild(Authentication authentication, Model model) {
@@ -80,21 +90,36 @@ public class ParentController {
         } else {
             Student child = children.get(0);
             model.addAttribute("child", children.get(0));
-            getChildInformations(model, loggedParent, child);
+            getChildInformation(model, loggedParent, child);
         }
         return "parent-view";
     }
 
+    /**
+     * Invoked when parent selects a child.
+     *
+     * @param childID        selected child id
+     * @param authentication to get parent username
+     * @param model          used to access objects from Thymeleaf
+     * @return main view
+     */
     @PostMapping()
     @PreAuthorize("hasAuthority('/parent')")
     public String getParentView(@RequestParam int childID, Authentication authentication, Model model) {
         Parent loggedParent = getParentByUserName(authentication.getName());
         Student child = studentRepository.findById(childID);
-        getChildInformations(model, loggedParent, child);
+        getChildInformation(model, loggedParent, child);
         return "parent-view";
     }
 
-    private void getChildInformations(Model model, Parent loggedParent, Student child) {
+    /**
+     * Adds some useful information about child to model.
+     *
+     * @param child
+     * @param loggedParent
+     * @param model
+     */
+    private void getChildInformation(Model model, Parent loggedParent, Student child) {
         int loggedStudentClassID = child.getStudentsClass().getClassID();
         List<Lesson> lessons = lessonRepository.findAllByStudentsClass_ClassID(loggedStudentClassID);
         model.addAttribute("child", child);
@@ -107,6 +132,12 @@ public class ParentController {
         this.child = child;
     }
 
+    /**
+     * Method changes presence from false to true.
+     *
+     * @param presenceID
+     * @return attendance view
+     */
     @GetMapping(path = "/attendance/{presenceID}")
     @PreAuthorize("hasAuthority('/parent/attendance/{presenceID}')")
     public String excuseAbsence(@PathVariable("presenceID") int presenceID) {
@@ -121,6 +152,13 @@ public class ParentController {
         return "redirect:/parent/attendance";
     }
 
+    /**
+     * Method that returns the attendance view for parent role.
+     *
+     * @param authentication to get parent username
+     * @param model          used to access objects from Thymeleaf
+     * @return attendance view
+     */
     @GetMapping(path = "/attendance")
     @PreAuthorize("hasAuthority('/parent/attendance')")
     public String getAttendanceView(Authentication authentication, Model model) {
@@ -128,10 +166,17 @@ public class ParentController {
         if (this.child == null) {
             return "redirect:/parent";
         }
-        getChildInformations(model, loggedParent, this.child);
+        getChildInformation(model, loggedParent, this.child);
         return "parent-attendance-view";
     }
 
+    /**
+     * Method that returns the grades view for parent role.
+     *
+     * @param authentication to get parent username
+     * @param model          used to access objects from Thymeleaf
+     * @return grades view
+     */
     @GetMapping(path = "/grades")
     @PreAuthorize("hasAuthority('/parent/grades')")
     public String getGradesView(Authentication authentication, Model model) {
@@ -139,11 +184,18 @@ public class ParentController {
         if (this.child == null) {
             return "redirect:/parent";
         }
-        getChildInformations(model, loggedParent, this.child);
+        getChildInformation(model, loggedParent, this.child);
         return "parent-grades-view";
     }
 
-    //case details view
+    /**
+     * Method that returns the case details view for parent role.
+     *
+     * @param authentication to get parent username
+     * @param model          used to access objects from Thymeleaf
+     * @param caseID
+     * @return case details view
+     */
     @GetMapping(path = "/cases/{caseID}")
     @PreAuthorize("hasAuthority('/parent/cases/{caseID}')")
     public String selectedCase(@PathVariable("caseID") int caseID, Model model, Authentication authentication) {
@@ -159,7 +211,13 @@ public class ParentController {
         return "case-content-view";
     }
 
-    //case management
+    /**
+     * Method that returns the case management view for parent role.
+     *
+     * @param authentication to get parent username
+     * @param model          used to access objects from Thymeleaf
+     * @return case management view
+     */
     @GetMapping("/cases")
     @PreAuthorize("hasAuthority('/parent/cases')")
     public String getCaseManagementSite(Authentication authentication, Model model) {
@@ -171,7 +229,15 @@ public class ParentController {
         return "case-management";
     }
 
-    // add case view
+    /**
+     * Adds new case.
+     *
+     * @param newCase
+     * @param msgContent     content of the case
+     * @param model          used to access objects from Thymeleaf
+     * @param authentication to get parent username
+     * @return case overview
+     */
     @PostMapping("/cases/add")
     @PreAuthorize("hasAuthority('/parent/cases/add')")
     public String addCase(@ModelAttribute("newCase") Case newCase, @RequestParam("content") String msgContent, Model model, Authentication authentication) {
@@ -191,7 +257,14 @@ public class ParentController {
         return "redirect:/parent/cases/" + newCase.getCaseID() + "/";
     }
 
-    //reply to case
+    /**
+     * Invoked when parent replies to case.
+     *
+     * @param caseID
+     * @param content        message content
+     * @param authentication to get student username
+     * @return case view
+     */
     @PostMapping(path = "/cases/reply")
     @PreAuthorize("hasAuthority('/parent/cases/reply')")
     public String replyToCase(@RequestParam("caseID") int caseID, @RequestParam("content") String content, Authentication authentication) {
@@ -203,6 +276,12 @@ public class ParentController {
         return "redirect:/parent/cases/" + caseID + "/";
     }
 
+    /**
+     * Method that returns statistics of selected child.
+     *
+     * @param authentication to get parent username
+     * @return statistics (text not html file)
+     */
     @GetMapping(path = "/statistics")
     @PreAuthorize("hasAuthority('/parent/statistics')")
     @ResponseBody
@@ -228,10 +307,21 @@ public class ParentController {
         return returnString;
     }
 
+    /**
+     * Method used to add homeurl to model.
+     *
+     * @param model
+     */
     private void addHomeUrl(Model model) {
         model.addAttribute("homeUrl", "/parent/");
     }
 
+    /**
+     * Finds parent by username.
+     *
+     * @param userName
+     * @return parent
+     */
     private Parent getParentByUserName(String userName) {
         return parentRepository.findByUser_UserName(userName);
     }

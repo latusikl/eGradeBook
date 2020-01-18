@@ -137,7 +137,7 @@ public class HeadMasterController {
 
     @GetMapping("/overview")
     @PreAuthorize("hasAuthority('/headmaster/overview')")
-    public String getStudentOverview(Authentication authentication, Model model) {
+    public String getStudentOverview(Model model) {
         model.addAttribute("students", studentRepository.findAll());
         model.addAttribute("overviewComplete", false);
         return "headmaster-student-overview-view";

@@ -21,6 +21,7 @@
             <a class="nav-item nav-link" href="/headmaster/grades/">Generate grades raport</a>
             <a class="nav-item nav-link active" href="/headmaster/absence/">Generate absence raport</a>
             <a class="nav-item nav-link" href="/headmaster/overview/">Overview student</a>
+            <a class="nav-item nav-link" href="/headmaster/timetable/">Timetables</a>
         </div>
     </div>
 </nav>
@@ -41,7 +42,7 @@
     <div th:switch="${absenceComplete}">
         <div th:case="false"><i>Something gone wrong!</i></div>
         <div th:case="true">
-            <h2>Absence in class <span th:text="${choosenClass}"></span>: <span th:text="${absence}"></span></h2>
+            <h2>Absence in class <span th:text="${chosenClass}"></span>: <span th:text="${absence}"></span></h2>
         </div>
     </div>
 

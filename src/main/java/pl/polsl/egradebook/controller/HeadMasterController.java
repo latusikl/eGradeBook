@@ -103,7 +103,7 @@ public class HeadMasterController {
             model.addAttribute("rating", gradesRating);
 
         }
-        model.addAttribute("choosenClass", classesRepository.findById(selectedClass).get().getName());
+        model.addAttribute("chosenClass", classesRepository.findById(selectedClass).get().getName());
         model.addAttribute("class", classesRepository.findAll());
         return "headmaster-grades-rating-view";
     }
@@ -130,7 +130,7 @@ public class HeadMasterController {
             model.addAttribute("absenceComplete", true);
             model.addAttribute("absence", absenceNumber);
         }
-        model.addAttribute("choosenClass", classesRepository.findById(selectedClass).get().getName());
+        model.addAttribute("chosenClass", classesRepository.findById(selectedClass).get().getName());
         model.addAttribute("class", classesRepository.findAll());
         return "headmaster-class-absence-view";
     }
@@ -214,6 +214,30 @@ public class HeadMasterController {
         newMessage.setSender(userRepository.findUserByUserName(authentication.getName()));
         messageRepository.save(newMessage);
         return "redirect:/headmaster/cases/" + caseID + "/";
+    }
+
+    @GetMapping("/timetable")
+    @PreAuthorize("hasAuthority('/headmaster/timetable')")
+    public String getClassTimetable(Authentication authentication, Model model) {
+        model.addAttribute("class", classesRepository.findAll());
+        return "headmaster-class-timetable-view";
+    }
+
+    @PostMapping("/timetable")
+    @PreAuthorize("hasAuthority('/headmaster/timetable')")
+    public String classTimetablePost(Authentication authentication, Model model, @RequestParam("selectedClass") int selectedClass) {
+
+        List<Lesson> lessons = lessonRepository.findAllByStudentsClass_ClassID(selectedClass);
+        if (lessons.size() == 0) {
+            model.addAttribute("timetableComplete", false);
+        }
+        else {
+            model.addAttribute("timetableComplete", true);
+            model.addAttribute("lessons", lessons);
+        }
+        model.addAttribute("chosenClass", classesRepository.findById(selectedClass).get().getName());
+        model.addAttribute("class", classesRepository.findAll());
+        return "headmaster-class-timetable-view";
     }
 
     private void addHomeUrl(Model model) {

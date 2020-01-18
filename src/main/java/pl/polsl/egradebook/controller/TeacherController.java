@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import pl.polsl.egradebook.model.entities.Case;
 import pl.polsl.egradebook.model.entities.Grade;
 import pl.polsl.egradebook.model.entities.Lesson;
@@ -33,6 +34,7 @@ import pl.polsl.egradebook.model.util.StringValidator;
 import pl.polsl.egradebook.model.util.UrlValidator;
 
 import javax.validation.Valid;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -61,7 +63,10 @@ public class TeacherController {
 
     private final MessageRepository messageRepository;
 
-    public TeacherController(TeacherRepository teacherRepository, StudentRepository studentRepository, LessonRepository lessonRepository, UserRepository userRepository, GradeRepository gradeRepository, StudentsClassRepository studentsClassRepository, PresenceRepository presenceRepository, CaseRepository caseRepository, MessageRepository messageRepository) {
+    public TeacherController(TeacherRepository teacherRepository, StudentRepository studentRepository,
+                             LessonRepository lessonRepository, UserRepository userRepository, GradeRepository gradeRepository,
+                             StudentsClassRepository studentsClassRepository, PresenceRepository presenceRepository,
+                             CaseRepository caseRepository, MessageRepository messageRepository) {
         this.teacherRepository = teacherRepository;
         this.studentRepository = studentRepository;
         this.lessonRepository = lessonRepository;
@@ -300,6 +305,30 @@ public class TeacherController {
         model.addAttribute("todayDate", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         model.addAttribute("lessons", lessonRepository.findAllByTeacher_TeacherID(teacher.getTeacherID()));
         return "teacher-grades-management";
+    }
+
+    @GetMapping(path = "/overview")
+    @PreAuthorize("hasAuthority('/teacher/overview')")
+    public String getStatisticsView(Model model) {
+        model.addAttribute("students", studentRepository.findAll());
+        model.addAttribute("overviewComplete", false);
+        return "teacher-student-overview-view";
+    }
+
+    @PostMapping(path = "/overview")
+    @PreAuthorize("hasAuthority('/teacher/overview')")
+    public String getStatistics(@RequestParam Student selectedStudent, Model model) {
+        if (selectedStudent == null) {
+            return "Student not selected";
+        }
+        model.addAttribute("student", selectedStudent);
+        model.addAttribute("grades", gradeRepository.
+                findByStudent_studentID(selectedStudent.getStudentID()));
+        model.addAttribute("absences", presenceRepository.
+                findByStudent_studentIDAndPresent(selectedStudent.getStudentID(), false));
+        model.addAttribute("students", studentRepository.findAll());
+        model.addAttribute("overviewComplete", true);
+        return "teacher-student-overview-view";
     }
 
     private Teacher getTeacherByUserName(String userName) {

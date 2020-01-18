@@ -49,12 +49,12 @@ Proper file format example:
         <access>/teacher/cases</access>
         <access>/teacher/cases/add</access>
         <access>/teacher/cases/reply</access>
+        <access>/teacher/overview</access>
     </role>
     <role name="headmaster">
         <access>/headmaster</access>
         <access>/headmaster/grades</access>
         <access>/headmaster/absence</access>
-        <access>/headmaster/overview</access>
         <access>/headmaster/overview</access>
         <access>/headmaster/cases/{caseID}</access>
         <access>/headmaster/cases</access>

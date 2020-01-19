@@ -2,6 +2,11 @@ package pl.polsl.egradebook.wrappers;
 
 import javax.validation.constraints.NotBlank;
 
+
+/**
+ * Simple class for wrapping two strings into object.
+ * Required for usage in Thymleaf form.
+ */
 public class TripleStringWrapper extends DoubleStringWrapper {
 
     @NotBlank

@@ -1,6 +1,10 @@
 package pl.polsl.egradebook.wrappers;
 
 
+/**
+ * Simple class for wrapping two strings into object.
+ * Required for usage in Thymleaf form.
+ */
 public class DoubleStringWrapper {
     private String parameter1;
     private String parameter2;

@@ -1,0 +1,73 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Users management</title>
+</head>
+<body class="body"
+      th:style="'background: url(' + @{/pictures/gray_background5.jpg} + '); background-size: cover; width: 100%; height: 100%'">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/logout">Logout</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link active" href="/admin">Home <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link active" href="/admin/show/students">Show students <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link active" href="/admin/show/parents">Show parents <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link active" href="/admin/show/teachers">Show teachers <span class="sr-only">(current)</span></a>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div th:switch="${teachers}">
+        <h4 class="text-danger" th:case="null">No teachers's yet!</h4>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <h5 class="text-light bg-dark">Teachers available in system:</h5>
+        <br/>
+        <div style="text-align: center" th:case="*">
+            <table class="table table-striped" style="display:block; overflow-y: scroll; height:500px;">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Surname</th>
+                    <th>User name</th>
+                    <th>ID</th>
+                    <th>Email</th>
+                </tr>
+                </thead>
+                <tbody class="border border-secondary">
+                <tr th:each="teacher : ${teachers}">
+                    <td th:text="${teacher.user.name}"></td>
+                    <td th:text="${teacher.user.surname}"></td>
+                    <td th:text="${teacher.user.userName}"></td>
+                    <td th:text="${teacher.user.userID}"></td>
+                    <td th:text="${teacher.user.email}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<br/>
+<br/>
+<br/>
+<br/>
+<footer id="sticky-footer" class="py-4 bg-dark text-white-50">
+    <div class="container text-center">
+        <p>Find project on Github: <a href="https://github.com/latusikl/eGradeBook">eGradeBook</a></p>
+        <p><b>GNU GENERAL PUBLIC LICENSE</b></p>
+    </div>
+</footer>
+</body>
+</html>

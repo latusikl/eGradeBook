@@ -2,42 +2,32 @@ package pl.polsl.egradebook.controller;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
 @Controller
 public class MainController {
-    private final PasswordEncoder passwordEncoder;
-
-    public MainController(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @GetMapping("/")
     public String index() {
         return "login.html";
     }
 
-    //redirect here after successful login, url temporary, better name pending
+    /**
+     * Simple managing of redirect, depending on user role.
+     */
     @GetMapping("/authredir")
-    public String authredir(Authentication authentication) {
-        //get collection of all authorities, which contains allowed urls
-        //admin
-        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("/admin/user/show/all")))
-            return "redirect:/admin/user/show/all";
-            //teacher
-        else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("/teacher")))
+    public String redirectLoggedUser(Authentication authentication) {
+        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN_ROLE")))
+            return "redirect:/admin";
+        else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("TEACHER_ROLE")))
             return "redirect:/teacher";
-            //student
-        else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("/student")))
+        else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("STUDENT_ROLE")))
             return "redirect:/student";
-            //parent
-        else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("/parent")))
+        else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("PARENT_ROLE")))
             return "redirect:/parent";
-            //headmaster
-        else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("/headmaster")))
+        else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("HEADMASTER_ROLE")))
             return "redirect:/headmaster";
         else
             return "redirect:/";

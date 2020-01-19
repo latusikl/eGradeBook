@@ -1,14 +1,7 @@
 package pl.polsl.egradebook.model.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "students")
@@ -19,14 +12,17 @@ public class Student {
 
     @OneToOne
     @JoinColumn(name = "userID")
+    @NotNull
     private User user;
 
     @OneToOne
     @JoinColumn(name = "classID")
+    @NotNull
     private StudentsClass studentsClass;
 
     @ManyToOne
     @JoinColumn(name = "parentID")
+    @NotNull
     private Parent parent;
 
     public int getStudentID() {

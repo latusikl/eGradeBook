@@ -19,6 +19,7 @@ Proper file format example:
 
 <config>
     <role name="student">
+        <access>STUDENT_ROLE</access>
         <access>/student</access>
         <access>/student/cases/{caseID}</access>
         <access>/student/cases</access>
@@ -29,6 +30,7 @@ Proper file format example:
         <access>/student/statistics</access>
     </role>
     <role name="parent">
+        <access>PARENT_ROLE</access>
         <access>/parent</access>
         <access>/parent/cases/{caseID}</access>
         <access>/parent/cases</access>
@@ -40,6 +42,7 @@ Proper file format example:
         <access>/parent/statistics</access>
     </role>
     <role name="teacher">
+        <access>TEACHER_ROLE</access>
         <access>/teacher</access>
         <access>/teacher/attendance</access>
         <access>/teacher/attendance/submit</access>
@@ -52,6 +55,7 @@ Proper file format example:
         <access>/teacher/overview</access>
     </role>
     <role name="headmaster">
+        <access>HEADMASTER_ROLE</access>
         <access>/headmaster</access>
         <access>/headmaster/grades</access>
         <access>/headmaster/absence</access>
@@ -63,9 +67,11 @@ Proper file format example:
         <access>/headmaster/timetable</access>
     </role>
     <role name="admin">
-        <access>/user/add</access>
-        <access>/user/delete/{userID}</access>
+        <access>ADMIN_ROLE</access>
+        <access>/admin</access>
         <access>/admin/user/change/password</access>
-        <access>/admin/user/show/all</access>
+        <access>/admin/user/add</access>
+        <access>/admin/user/delete/{userID}</access>
+        <access>/admin/user/add/*</access>
     </role>
 </config>

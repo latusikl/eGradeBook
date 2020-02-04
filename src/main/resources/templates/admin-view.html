@@ -1,0 +1,159 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Users management</title>
+</head>
+<body class="body"
+      th:style="'background: url(' + @{/pictures/gray_background5.jpg} + '); background-size: cover; width: 100%; height: 100%'">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/logout">Logout</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link active" href="/admin">Home <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link active" href="/admin/show/students">Show students <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link active" href="/admin/show/parents">Show parents <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link active" href="/admin/show/teachers">Show teachers <span class="sr-only">(current)</span></a>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div th:switch="${users}">
+        <h4 class="text-danger" th:case="null">No users yet!</h4>
+        <br/>
+        <br/>
+        <h4>Welcome to administrator's console.</h4>
+        <br/>
+        <br/>
+        <h5 class="text-light bg-dark">Users available in system:</h5>
+        <br/>
+            <div style="text-align: center" th:case="*">
+                <table class="table table-striped" style="display:block; overflow-y: scroll; height:500px;">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Surname</th>
+                        <th>User name</th>
+                        <th>Password</th>
+                        <th>ID</th>
+                        <th>Email</th>
+                        <th>RoleType</th>
+                        <th>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody class="border border-secondary">
+                    <tr th:each="user : ${users}">
+                        <td th:text="${user.name}"></td>
+                        <td th:text="${user.surname}"></td>
+                        <td th:text="${user.userName}"></td>
+                        <td th:text="${user.password.substring(0,12)}"></td>
+                        <td th:text="${user.userID}"></td>
+                        <td th:text="${user.email}"></td>
+                        <td th:text="${user.roleType}"></td>
+                        <td><a class="text-dark"
+                               th:href="@{/admin/user/delete/{userID}(userID=${user.userID})}">Delete</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <br/>
+</div>
+<div class="container">
+    <form action="#" method="post" th:action="@{/admin/user/add}" th:object="${user}">
+        <div class="form-group">
+            <br/>
+            <h5 class="text-light bg-dark">Add user:</h5>
+            <br/>
+            <div class="row">
+                <div class="col">
+                    <label for="name">Name</label>
+                    <input type="text" th:field="*{name}" id="name" placeholder="Name" class="form-control">
+                    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+                    <br/>
+                    <label for="password">Password</label>
+                    <input type="text" th:field="*{password}" id="password" placeholder="Password"
+                           class="form-control">
+                    <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+                </div>
+                <div class="col">
+                    <label for="surname">Surname</label>
+                    <input type="text" th:field="*{surname}" id="surname" placeholder="Surname"
+                           class="form-control">
+                    <span th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></span>
+                    <br/>
+                    <label for="email">Email</label>
+                    <input type="text" th:field="*{email}" id="email" placeholder="Email" class="form-control">
+                    <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                </div>
+                <div class="col">
+                    <label for="userName">User Name</label>
+                    <input type="text" th:field="*{userName}" id="userName" placeholder="UserName"
+                           class="form-control">
+                    <span th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}"></span>
+                    <br/>
+                    <label for="roleType">Role Type</label>
+                    <select id="roleType" th:field="*{roleType}" class="form-control">
+                        <option th:each="role : ${roles}"
+                                th:value="${role}" th:text="${role}"/>
+                    </select>
+                    <span th:if="${#fields.hasErrors('roleType')}" th:errors="*{roleType}"></span>
+                    <br/>
+                    <input type="submit" value="Add User" class="btn btn-secondary">
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="container">
+    <form action="#" method="post" th:action="@{/admin/user/change/password}" th:object="${doubleStringWrapper}">
+        <div class="form-group">
+            <br/>
+            <h5 class="text-light bg-dark">Change password:</h5>
+            <br/>
+            <div class="row">
+                <div class="col">
+                    <br/>
+                    <label for="userToShow">User</label>
+                    <select id="userToShow" th:action="*{parameter1}">
+                        <option th:each=" userToShow : ${users}"
+                                th:value="${userToShow.getUserName()}" th:text="${userToShow.getUserName()}"></option>
+                    </select>
+                </div>
+                <div class="col">
+                    <br/>
+                    <input type="text" id="passwordToSet" th:field="*{parameter2}" placeholder="New password"
+                           class="form-control">
+                </div>
+                <div class="col">
+                    <br/>
+                    <input type="submit" value="Change password" class="btn btn-secondary">
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<br/>
+<br/>
+<br/>
+<br/>
+<footer id="sticky-footer" class="py-4 bg-dark text-white-50">
+    <div class="container text-center">
+    <p>Find project on Github: <a href="https://github.com/latusikl/eGradeBook">eGradeBook</a></p>
+        <p><b>GNU GENERAL PUBLIC LICENSE</b></p>
+    </div>
+</footer>
+</body>
+</html>

@@ -1,11 +1,7 @@
 package pl.polsl.egradebook.model.entities;
 
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -30,6 +26,7 @@ public class User {
 	
 	
 	@NotBlank(message = "Login is required!")
+	@Column(name = "user_name", unique = true)
 	private String userName;
 	@NotBlank(message = "Password is required!")
 	private String password;
@@ -39,6 +36,10 @@ public class User {
 	@Override
 	public String toString() {
 		return "User{" + "userID=" + userID + ", name='" + name + '\'' + ", surname='" + surname + '\'' + ", email='" + email + '\'' + ", login='" + userName + '\'' + ", password='" + password + '\'' + ", roleType=" + roleType + '}';
+	}
+
+	public String getBasicUserData(){
+		return userName + " | " + name + " | " + surname;
 	}
 	
 	public String getPassword() {

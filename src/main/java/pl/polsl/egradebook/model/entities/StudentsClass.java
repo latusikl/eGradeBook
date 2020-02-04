@@ -22,6 +22,10 @@ public class StudentsClass {
                 '}';
     }
 
+    public String getBasicClassInfo(){
+        return name + " | " + classID;
+    }
+
     public int getClassID() {
         return classID;
     }

@@ -39,7 +39,7 @@ public class RoleProperties {
 	 */
 	private Map<String, List<String>> roleAuthenticatorsMap;
 
-	RoleProperties() throws InputException{
+	RoleProperties(){
 		this.roleAuthenticatorsMap =new HashMap<>();
 	}
 
@@ -102,11 +102,11 @@ public class RoleProperties {
 		}
 	}
 
-	Set<String> getRoleNames(){
+	public Set<String> getRoleNames(){
 		return roleAuthenticatorsMap.keySet();
 	}
 
-	List<String> getPropertiesByRoleName(String roleName){
+	public List<String> getPropertiesByRoleName(String roleName){
 		return this.roleAuthenticatorsMap.get(roleName);
 	}
 	

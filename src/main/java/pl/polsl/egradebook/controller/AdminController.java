@@ -113,7 +113,6 @@ public class AdminController {
             parentRepository.save(parentToAdd);
         }
 
-        //addRequiredModelAttributesForAdminRedirect(model);
         return "redirect:/admin";
     }
 
@@ -140,9 +139,10 @@ public class AdminController {
             teacherRepository.save(teacherToAdd);
         }
 
-        // addRequiredModelAttributesForAdminRedirect(model);
         return "redirect:/admin";
     }
+
+    //End of adding user
 
     @GetMapping(path = "/user/delete/{userID}")
     @PreAuthorize("hasAuthority('/admin/user/delete/{userID}')")
@@ -154,13 +154,11 @@ public class AdminController {
             userRepository.delete(userToDelete.get());
         }
 
-        //addRequiredModelAttributesForAdminRedirect(model);
-
         return "redirect:/admin";
     }
 
     @GetMapping("/show/students")
-    @PreAuthorize("hasAuthority('admin/show/*')")
+    @PreAuthorize("hasAuthority('/admin/show/*')")
     public String showStudents(Model model) {
         model.addAttribute("students", studentRepository.findAll());
 
@@ -168,7 +166,7 @@ public class AdminController {
     }
 
     @GetMapping("/show/parents")
-    @PreAuthorize("hasAuthority('admin/show/*')")
+    @PreAuthorize("hasAuthority('/admin/show/*')")
     public String showParents(Model model) {
         model.addAttribute("parents", parentRepository.findAll());
 
@@ -176,7 +174,7 @@ public class AdminController {
     }
 
     @GetMapping("/show/teachers")
-    @PreAuthorize("hasAuthority('admin/show/*')")
+    @PreAuthorize("hasAuthority('/admin/show/*')")
     public String showTeachers(Model model) {
         model.addAttribute("teachers", teacherRepository.findAll());
 

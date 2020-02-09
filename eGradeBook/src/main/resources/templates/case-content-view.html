@@ -1,0 +1,98 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<style>
+</style>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Case content</title>
+</head>
+<body th:style="'background: url(' + @{/pictures/gray_background5.jpg} + '); background-size: cover; width: 100%; height: 100%'">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/logout">Logout</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link" th:href="${homeUrl}">Home </a>
+            <a class="nav-item nav-link active" th:href="${homeUrl+'cases/'}">Cases <span
+                    class="sr-only">(current)</span></a>
+            <th:block th:switch="${homeUrl}">
+                <th:block th:case="'/teacher/'">
+                    <a class="nav-item nav-link" href="/teacher/attendance/">Attendance</a>
+                    <a class="nav-item nav-link " href="/teacher/grades/">Grades</a>
+                    <a class="nav-item nav-link" href="/teacher/overview/">Overview student</a>
+                </th:block>
+                <th:block th:case="'/student/'">
+                    <a class="nav-item nav-link" href="/student/grades">Grades </a>
+                    <a class="nav-item nav-link" href="/student/attendance">Attendance </a>
+                    <a class="nav-item nav-link" href="/student/statistics">Statistics </a>
+                </th:block>
+                <th:block th:case="'/parent/'">
+                    <a class="nav-item nav-link" href="/parent/attendance">Attendance </a>
+                    <a class="nav-item nav-link" href="/parent/grades">Grades </a>
+                    <a class="nav-item nav-link" href="/parent/statistics">Statistics </a>
+                </th:block>
+                <th:block th:case="'/headmaster/'">
+                    <a class="nav-item nav-link" href="/headmaster/grades/">Generate grades raport</a>
+                    <a class="nav-item nav-link" href="/headmaster/absence/">Generate absence raport</a>
+                    <a class="nav-item nav-link" href="/headmaster/overview/">Overview student</a>
+                    <a class="nav-item nav-link" href="/headmaster/timetable/">Timetables</a>
+                </th:block>
+            </th:block>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <h5>Case sender:
+        <span th:text="${case.sender.name + ' ' + case.sender.surname}"/>
+    </h5>
+    <h5>Case receiver:
+        <span th:text="${case.receiver.name + ' ' + case.receiver.surname}"/>
+    </h5>
+    <h5>Case topic:
+        <span th:text="${case.topic}"/>
+    </h5>
+    <div th:each="m: ${messages}">
+        <span th:text="${'['+m.sender.name+' '+m.sender.surname+'] '+m.content}"/>
+    </div>
+    <br>
+    <form th:action="${homeUrl+'cases/reply/'}" method="post">
+        <input type="hidden" th:value="${case.caseID}" th:name="caseID"/>
+        <label for="content"><b>Create new message</b></label>
+        <input type="text" class="form-control" id="content" name="content" placeholder="Content"></input>
+        <br>
+        <button type="submit" class="btn btn-secondary">Reply to this case</button>
+    </form>
+    <br>
+    <form th:action="${homeUrl+'cases/'}" method="get">
+        <button type="submit" class="btn btn-secondary">Back to case management</button>
+    </form>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<br/>
+<br/>
+<br/>
+<br/>
+<footer class="fixed-bottom">
+    <div class="py-4 bg-dark text-white-50">
+        <div class="container text-center">
+            <p>Find project on Github: <a href="https://github.com/latusikl/eGradeBook">eGradeBook</a></p>
+            <p><b>GNU GENERAL PUBLIC LICENSE</b></p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

@@ -73,5 +73,6 @@ Proper file format example:
         <access>/admin/user/add</access>
         <access>/admin/user/delete/{userID}</access>
         <access>/admin/user/add/*</access>
+        <access>/admin/show/*</access>
     </role>
 </config>

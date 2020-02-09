@@ -39,7 +39,7 @@ public class AdminController {
         this.roleProperties = roleProperties;
     }
 
-    @GetMapping()
+    @GetMapping
     @PreAuthorize("hasAuthority('/admin')")
     public String getMainView(Model model) {
 
@@ -59,6 +59,8 @@ public class AdminController {
         return "redirect:/admin";
     }
 
+    //Mapping for adding different user types
+
     @PostMapping("/user/add")
     @PreAuthorize("hasAuthority('/admin/user/add')")
     public String addUser(@ModelAttribute @Valid User user, Model model) {
@@ -71,8 +73,7 @@ public class AdminController {
         return addAttributesForRoleRedirect(user.getRoleType(), Integer.toString(user.getUserID()), user.getUserName());
     }
 
-
-    @GetMapping("user/add/student/{userID}/{userName}")
+    @GetMapping("/user/add/student/{userID}/{userName}")
     @PreAuthorize("hasAuthority('/admin/user/add/*')")
     public String addStudentToUser(@PathVariable("userID") String userID, @PathVariable("userName") String userName, Model model, TripleStringWrapper tripleStringWrapper) {
         model.addAttribute("userID", userID);
@@ -101,33 +102,45 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @GetMapping("user/add/parent/{userID}/{userName}")
+    @GetMapping("/user/add/parent/{userID}/{userName}")
     @PreAuthorize("hasAuthority('/admin/user/add/*')")
-    public String addParentToUser(@PathVariable("userID") String userID, @PathVariable("userName") String userName, Model model){
+    public String addParentToUser(@PathVariable("userID") String userID, @PathVariable("userName") String userName, Model model) {
         Optional<User> userToConnect = userRepository.findById(Integer.parseInt(userID));
 
-        if(userToConnect.isPresent()){
+        if (userToConnect.isPresent()) {
             Parent parentToAdd = new Parent();
             parentToAdd.setUser(userToConnect.get());
             parentRepository.save(parentToAdd);
         }
 
-        addRequiredModelAttributesForAdminRedirect(model);
+        //addRequiredModelAttributesForAdminRedirect(model);
         return "redirect:/admin";
     }
 
-    @GetMapping("user/add/teacher/{userID}/{userName}")
+    @GetMapping("/user/add/headmaster/{userID}/{userName}")
     @PreAuthorize("hasAuthority('/admin/user/add/*')")
-    public String addTeacherToUser(@PathVariable("userID") String userID, @PathVariable("userName") String userName, Model model){
+    public String redirectAfterAddingHeadmaster(@PathVariable("userID") String userID, @PathVariable("userName") String userName) {
+        return "redirect:/admin";
+    }
+
+    @GetMapping("/user/add/admin/{userID}/{userName}")
+    @PreAuthorize("hasAuthority('/admin/user/add/*')")
+    public String redirectAfterAddingAdmin(@PathVariable("userID") String userID, @PathVariable("userName") String userName) {
+        return "redirect:/admin";
+    }
+
+    @GetMapping("/user/add/teacher/{userID}/{userName}")
+    @PreAuthorize("hasAuthority('/admin/user/add/*')")
+    public String addTeacherToUser(@PathVariable("userID") String userID, @PathVariable("userName") String userName, Model model) {
         Optional<User> userToConnect = userRepository.findById(Integer.parseInt(userID));
 
-        if(userToConnect.isPresent()){
+        if (userToConnect.isPresent()) {
             Teacher teacherToAdd = new Teacher();
             teacherToAdd.setUser(userToConnect.get());
             teacherRepository.save(teacherToAdd);
         }
 
-        addRequiredModelAttributesForAdminRedirect(model);
+        // addRequiredModelAttributesForAdminRedirect(model);
         return "redirect:/admin";
     }
 
@@ -141,12 +154,13 @@ public class AdminController {
             userRepository.delete(userToDelete.get());
         }
 
-        addRequiredModelAttributesForAdminRedirect(model);
+        //addRequiredModelAttributesForAdminRedirect(model);
 
         return "redirect:/admin";
     }
 
     @GetMapping("/show/students")
+    @PreAuthorize("hasAuthority('admin/show/*')")
     public String showStudents(Model model) {
         model.addAttribute("students", studentRepository.findAll());
 
@@ -154,6 +168,7 @@ public class AdminController {
     }
 
     @GetMapping("/show/parents")
+    @PreAuthorize("hasAuthority('admin/show/*')")
     public String showParents(Model model) {
         model.addAttribute("parents", parentRepository.findAll());
 
@@ -161,6 +176,7 @@ public class AdminController {
     }
 
     @GetMapping("/show/teachers")
+    @PreAuthorize("hasAuthority('admin/show/*')")
     public String showTeachers(Model model) {
         model.addAttribute("teachers", teacherRepository.findAll());
 

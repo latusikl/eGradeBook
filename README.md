@@ -5,25 +5,25 @@ Grade Book Application
 In this repository you will find application which is impelmentation of online grade book with all basic functionalities required for this kind of applications.
 
 ### Contributors ###
-1. [latusikl](https://github.com/latusikl)
-2. [syphzur](https://github.com/syphzur)
-3. [JChrobak](https://github.com/JChrobak)
-4. [michalstolorz](https://github.com/michalstolorz)
-5. [Suchar230](https://github.com/Suchar230)
+* [latusikl](https://github.com/latusikl)
+* [syphzur](https://github.com/syphzur)
+* [JChrobak](https://github.com/JChrobak)
+* [michalstolorz](https://github.com/michalstolorz)
+* [Suchar230](https://github.com/Suchar230)
 
 **Curucial functionalities:**
-* User types: Administrator, Teacher, Headmaster, Student, Parent
-* Checking attendance
-* Communication between system users
-* Embeded lesson plan for teachers and students
-* Giving marks
-* Generating simple statistic information like average grade for class
-* Possiblity to justify child absence
+* user types: Administrator, Teacher, Headmaster, Student, Parent;
+* checking attendance;
+* communication between system users;
+* embeded lesson plan for teachers and students;
+* giving marks;
+* generating simple statistic information like average grade for class;
+* possiblity to justify child absence;
 
 ---
 #### How to try it out? ###
 
-Currently project is connected with free remote database hosting. Until it is valid you just need to downlonad [this file](https://github.com/latusikl/eGradeBook/blob/master/jar/e-grade-book.jar) and run command:
+Project was connected with free remote database hosting. Until it is valid you just need to downlonad [this file](https://github.com/latusikl/eGradeBook/blob/master/jar/e-grade-book.jar) and run command:
 <br/>
 ```
 java -jar e-grade-book.jar
@@ -66,7 +66,7 @@ More picutres you can find [here](https://github.com/latusikl/eGradeBook/tree/ma
 
 #### Additionals ####
 
-* Technologies and project language:
+Technologies and project language:
 * Java
 * Spring Boot
 * JPA
